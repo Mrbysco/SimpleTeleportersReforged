@@ -2,6 +2,7 @@ package com.mrbysco.simpleteleporters.datagen;
 
 import com.mrbysco.simpleteleporters.datagen.assets.SimpleLanguageProvider;
 import com.mrbysco.simpleteleporters.datagen.assets.SimpleSoundProvider;
+import com.mrbysco.simpleteleporters.datagen.data.SimpleBlockTagsProvider;
 import com.mrbysco.simpleteleporters.datagen.data.SimpleLootProvider;
 import com.mrbysco.simpleteleporters.datagen.data.SimpleRecipeProvider;
 import net.minecraft.core.HolderLookup;
@@ -26,6 +27,7 @@ public class SimpleDataGen {
 		if (event.includeServer()) {
 			generator.addProvider(true, new SimpleLootProvider(packOutput));
 			generator.addProvider(true, new SimpleRecipeProvider(packOutput));
+			generator.addProvider(true, new SimpleBlockTagsProvider(packOutput, lookupProvider, existingFileHelper));
 		}
 		if (event.includeClient()) {
 			generator.addProvider(true, new SimpleLanguageProvider(packOutput));
