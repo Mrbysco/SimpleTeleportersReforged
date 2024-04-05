@@ -17,7 +17,6 @@ import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
-
 public class SimpleRecipeProvider extends RecipeProvider {
 	public SimpleRecipeProvider(PackOutput packOutput) {
 		super(packOutput);
