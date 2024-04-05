@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "simpleteleporters:ender_shard"
+    }
+  ],
+  "result": {
+    "item": "simpleteleporters:ender_shard"
+  }
+}

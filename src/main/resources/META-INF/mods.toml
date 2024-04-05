@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="[46,)"
+#issueTrackerURL="https://github.com/Mrbysco/?/issues"
+license="MIT"
+
+[[mods]]
+modId="simpleteleporters"
+version="${file.jarVersion}"
+displayName="Simple Teleporters"
+#displayURL="https://www.curseforge.com/minecraft/mc-mods/?"
+logoFile="icon.png"
+authors="Mrbysco, ShyNieke"
+credits="Lemonszz and Shnupbups for the original mod"
+description='''
+Simple Teleporters adds a craftable teleporter block to quickly travel your world!
+'''
+[[dependencies.simpleteleporters]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20,1.21)"
+ordering="NONE"
+side="BOTH"
