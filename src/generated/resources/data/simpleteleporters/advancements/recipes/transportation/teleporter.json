@@ -52,17 +52,16 @@
   },
   "requirements": [
     [
+      "has_the_recipe",
       "has_ender_shard",
       "has_gold_block",
       "has_quartz_block",
-      "has_netherite_ingot",
-      "has_the_recipe"
+      "has_netherite_ingot"
     ]
   ],
   "rewards": {
     "recipes": [
       "simpleteleporters:teleporter"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

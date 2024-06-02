@@ -1,5 +1,6 @@
 package com.mrbysco.simpleteleporters.block;
 
+import com.mojang.serialization.MapCodec;
 import com.mrbysco.simpleteleporters.block.entity.TeleporterBlockEntity;
 import com.mrbysco.simpleteleporters.item.TeleportCrystalItem;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
@@ -44,10 +45,16 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class TeleporterBlock extends BaseEntityBlock {
+	public static final MapCodec<TeleporterBlock> CODEC = simpleCodec(TeleporterBlock::new);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty ON = BooleanProperty.create("on");
 
 	protected static final VoxelShape SHAPE = Shapes.box(0D, 0.0D, 0D, 1D, 0.38D, 1D);
+
+	@Override
+	public MapCodec<TeleporterBlock> codec() {
+		return CODEC;
+	}
 
 	public TeleporterBlock(Properties properties) {
 		super(properties);
@@ -132,11 +139,11 @@ public class TeleporterBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
 		if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter && teleporter.hasCrystal()) {
 			Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), teleporter.getCrystal());
 		}
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 
 

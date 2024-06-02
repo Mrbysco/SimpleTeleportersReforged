@@ -8,10 +8,9 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.slf4j.Logger;
 
 import java.util.List;
@@ -25,9 +24,7 @@ public class SimpleTeleporters {
 		return new ResourceLocation(MOD_ID, path);
 	}
 
-	public SimpleTeleporters() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
+	public SimpleTeleporters(IEventBus eventBus) {
 		SimpleTeleportersBlocks.BLOCKS.register(eventBus);
 		SimpleTeleportersBlockEntities.BLOCK_ENTITY_TYPES.register(eventBus);
 		SimpleTeleportersItems.ITEMS.register(eventBus);

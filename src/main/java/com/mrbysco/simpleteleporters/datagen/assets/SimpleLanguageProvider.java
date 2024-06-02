@@ -6,8 +6,8 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 public class SimpleLanguageProvider extends LanguageProvider {
 	public SimpleLanguageProvider(PackOutput packOutput) {
@@ -35,7 +35,7 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Shard isn't powerful enough to cross dimensions!");
 	}
 
-	public void addSubtitle(RegistryObject<SoundEvent> sound, String name) {
+	public void addSubtitle(DeferredHolder<SoundEvent, SoundEvent> sound, String name) {
 		String path = SimpleTeleporters.MOD_ID + sound.getId().getPath() + ".subtitle.";
 		this.add(path, name);
 	}

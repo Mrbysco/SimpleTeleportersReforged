@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_ender_eye",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_ender_eye"
     ]
   ],
   "rewards": {
     "recipes": [
       "simpleteleporters:ender_shard"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }
