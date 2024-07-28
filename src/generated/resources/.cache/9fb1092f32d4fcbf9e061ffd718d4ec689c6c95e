@@ -1,7 +1,7 @@
-// 1.20.4	2024-06-02T20:38:27.5264271	Recipes
-ac01ca57a6b7ef1e94e93d3b294c63369eed9858 data/simpleteleporters/advancements/recipes/transportation/clear_shard.json
-13214cc28fffd2cbcec3615ca70a3375738fbec6 data/simpleteleporters/advancements/recipes/transportation/ender_shard.json
-e3d3121cb543703022e3ac00394d76b212ce34bc data/simpleteleporters/advancements/recipes/transportation/teleporter.json
-8fd3bb95c176a65a75ce6d112937aee59ebb5705 data/simpleteleporters/recipes/clear_shard.json
-b376183de3ec562534d5bb9900654cdb39c6256e data/simpleteleporters/recipes/ender_shard.json
-2b348e800da292a0f83c7ba8ae3a6dc637e2be25 data/simpleteleporters/recipes/teleporter.json
+// 1.21	2024-07-29T00:01:35.5330051	Recipes
+0f78007b5b6eaf48cfc61e2e68808ce535e6559a data/simpleteleporters/advancement/recipes/transportation/clear_shard.json
+cf21d616d8d2d793554bd38f83fe2089cd3503bc data/simpleteleporters/advancement/recipes/transportation/ender_shard.json
+f7a1249cf792c00ca84ca389ca2086efc9f51dae data/simpleteleporters/advancement/recipes/transportation/teleporter.json
+5a8ee367cd52bdf6705cb005a673326f8638cf6a data/simpleteleporters/recipe/clear_shard.json
+b1066e88f97424b7eaa0a753c40d34608ecf4255 data/simpleteleporters/recipe/ender_shard.json
+b3e12c1e2882bba112a8f42bf2e10f298952ee4d data/simpleteleporters/recipe/teleporter.json

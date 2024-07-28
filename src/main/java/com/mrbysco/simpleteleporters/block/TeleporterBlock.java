@@ -2,8 +2,8 @@ package com.mrbysco.simpleteleporters.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mrbysco.simpleteleporters.block.entity.TeleporterBlockEntity;
-import com.mrbysco.simpleteleporters.item.TeleportCrystalItem;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.ChatFormatting;
@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -101,7 +101,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
 			if (teleporter.hasCrystal()) {
 				ItemStack crystal = teleporter.getCrystal();
@@ -116,26 +116,23 @@ public class TeleporterBlock extends BaseEntityBlock {
 				teleporter.setCrystal(ItemStack.EMPTY);
 
 				level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-				return InteractionResult.SUCCESS;
+				return ItemInteractionResult.SUCCESS;
 			} else {
-				ItemStack stack = player.getItemInHand(hand);
-				if (!stack.isEmpty()) {
-					if (stack.getItem() == SimpleTeleportersItems.ENDER_SHARD.get()) {
-						if (TeleportCrystalItem.hasPosition(stack.getTag())) {
-							player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.get(), 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
-							level.setBlockAndUpdate(pos, state.setValue(ON, true));
-							ItemStack crystal = stack.split(1);
-							teleporter.setCrystal(crystal);
+				if (!stack.isEmpty() && stack.is(SimpleTeleportersItems.ENDER_SHARD.get())) {
+					if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
+						player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.get(), 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+						level.setBlockAndUpdate(pos, state.setValue(ON, true));
+						ItemStack crystal = stack.split(1);
+						teleporter.setCrystal(crystal);
 
-							return InteractionResult.SUCCESS;
-						} else {
-							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.unlinked_shard").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
-						}
+						return ItemInteractionResult.SUCCESS;
+					} else {
+						player.displayClientMessage(Component.translatable("text.simpleteleporters.error.unlinked_shard").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
 					}
 				}
 			}
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

@@ -1,24 +1,24 @@
 package com.mrbysco.simpleteleporters.client;
 
-import com.mrbysco.simpleteleporters.item.TeleportCrystalItem;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class ClientHandler {
 	@SubscribeEvent
 	public static void onRender(RenderLevelStageEvent event) {
@@ -32,11 +32,11 @@ public class ClientHandler {
 					for (InteractionHand hand : InteractionHand.values()) {
 						ItemStack stack = player.getItemInHand(hand);
 						if (!stack.isEmpty() && stack.is(SimpleTeleportersItems.ENDER_SHARD.get())) {
-							CompoundTag nbt = stack.getTag();
-							if (TeleportCrystalItem.hasPosition(nbt)) {
-								ResourceKey<Level> dimension = TeleportCrystalItem.getDimensionKey(nbt);
+							if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
+								GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
+								ResourceKey<Level> dimension = globalPos.dimension();
 								if (level.dimension().equals(dimension)) {
-									BlockPos telePos = TeleportCrystalItem.getPosition(nbt);
+									BlockPos telePos = globalPos.pos();
 									if (telePos != null) {
 										BlockPos downPos = telePos.below();
 										if (level.getBlockState(downPos).is(SimpleTeleportersBlocks.TELEPORTER.get())) {

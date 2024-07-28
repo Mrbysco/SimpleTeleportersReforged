@@ -1,9 +1,12 @@
 package com.mrbysco.simpleteleporters.block.entity;
 
-import com.mrbysco.simpleteleporters.item.TeleportCrystalItem;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -32,8 +35,9 @@ public class TeleporterBlockEntity extends BlockEntity {
 		if (getCrystal().isEmpty())
 			return false;
 
-		CompoundTag nbt = getCrystal().getTag();
-		return TeleportCrystalItem.getDimensionKey(nbt).equals(entity.level().dimension());
+		GlobalPos globalPos = getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
+		ResourceKey<Level> dimensionKey = globalPos != null ? globalPos.dimension() : Level.OVERWORLD;
+		return dimensionKey.equals(entity.level().dimension());
 	}
 
 	public ItemStack getCrystal() {
@@ -53,35 +57,33 @@ public class TeleporterBlockEntity extends BlockEntity {
 		if (!hasCrystal())
 			return null;
 
-		CompoundTag nbt = this.getCrystalNbt();
-		return TeleportCrystalItem.getPosition(nbt);
+		GlobalPos globalPos = getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
+		return globalPos != null ? globalPos.pos() : null;
 	}
 
 	@Override
-	public void load(CompoundTag nbt) {
-		super.load(nbt);
+	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.loadAdditional(tag, registries);
 
-		if (nbt.contains("crystal")) {
-			this.setCrystal(ItemStack.of(nbt.getCompound("crystal")));
+		if (tag.contains("crystal")) {
+			this.setCrystal(ItemStack.parseOptional(registries, tag.getCompound("crystal")));
 		} else {
 			this.setCrystal(ItemStack.EMPTY);
 		}
-		if (nbt.contains("cooldown")) {
-			this.setCooldown(nbt.getInt("cooldown"));
+		if (tag.contains("cooldown")) {
+			this.setCooldown(tag.getInt("cooldown"));
 		} else {
 			this.setCooldown(0);
 		}
 	}
 
-
 	@Override
-	public void saveAdditional(CompoundTag nbt) {
-		super.saveAdditional(nbt);
-
+	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
+		super.saveAdditional(tag, registries);
 		if (!crystal.isEmpty()) {
-			nbt.put("crystal", this.crystal.save(new CompoundTag()));
+			tag.put("crystal", this.crystal.save(registries, new CompoundTag()));
 		}
-		nbt.putInt("cooldown", cooldown);
+		tag.putInt("cooldown", cooldown);
 	}
 
 	public boolean isCoolingDown() {
@@ -98,12 +100,5 @@ public class TeleporterBlockEntity extends BlockEntity {
 
 	public void incrementCooldown() {
 		this.setCooldown(this.getCooldown() - 1);
-	}
-
-	public CompoundTag getCrystalNbt() {
-		if (!hasCrystal())
-			return null;
-
-		return getCrystal().getTag();
 	}
 }

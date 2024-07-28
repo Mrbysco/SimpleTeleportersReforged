@@ -3,6 +3,7 @@ package com.mrbysco.simpleteleporters;
 import com.mojang.logging.LogUtils;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.resources.ResourceLocation;
@@ -21,12 +22,13 @@ public class SimpleTeleporters {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static ResourceLocation id(String path) {
-		return new ResourceLocation(MOD_ID, path);
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public SimpleTeleporters(IEventBus eventBus) {
 		SimpleTeleportersBlocks.BLOCKS.register(eventBus);
 		SimpleTeleportersBlockEntities.BLOCK_ENTITY_TYPES.register(eventBus);
+		SimpleTeleportersComponents.DATA_COMPONENT_TYPES.register(eventBus);
 		SimpleTeleportersItems.ITEMS.register(eventBus);
 		SimpleTeleportersSoundEvents.SOUND_EVENTS.register(eventBus);
 

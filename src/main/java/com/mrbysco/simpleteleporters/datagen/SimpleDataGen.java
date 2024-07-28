@@ -8,14 +8,14 @@ import com.mrbysco.simpleteleporters.datagen.data.SimpleRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class SimpleDataGen {
 	@SubscribeEvent
 	public static void gatherData(GatherDataEvent event) {
@@ -25,8 +25,8 @@ public class SimpleDataGen {
 		ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
 
 		if (event.includeServer()) {
-			generator.addProvider(true, new SimpleLootProvider(packOutput));
-			generator.addProvider(true, new SimpleRecipeProvider(packOutput));
+			generator.addProvider(true, new SimpleLootProvider(packOutput, lookupProvider));
+			generator.addProvider(true, new SimpleRecipeProvider(packOutput, lookupProvider));
 			generator.addProvider(true, new SimpleBlockTagsProvider(packOutput, lookupProvider, existingFileHelper));
 		}
 		if (event.includeClient()) {

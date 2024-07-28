@@ -5,9 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "simpleteleporters:ender_shard"
-            ]
+            "items": "simpleteleporters:ender_shard"
           }
         ]
       },
@@ -17,7 +15,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:storage_blocks/gold"
+            "items": "#c:storage_blocks/gold"
           }
         ]
       },
@@ -27,7 +25,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/netherite"
+            "items": "#c:ingots/netherite"
           }
         ]
       },
@@ -37,7 +35,7 @@
       "conditions": {
         "items": [
           {
-            "tag": "forge:storage_blocks/quartz"
+            "items": "minecraft:quartz_block"
           }
         ]
       },

@@ -18,25 +18,25 @@ public class SimpleSoundProvider extends SoundDefinitionsProvider {
 		this.add(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT, definition()
 				.subtitle(modSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.getId()))
 				.with(
-						sound(new ResourceLocation("mob/endermen/portal")),
-						sound(new ResourceLocation("mob/endermen/portal2"))
+						sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal")),
+						sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal2"))
 				));
 
 		this.add(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED, definition()
 				.subtitle(modSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.getId()))
 				.with(
-						sound(new ResourceLocation("random/pop"))
+						sound(ResourceLocation.withDefaultNamespace("random/pop"))
 				));
 		this.add(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED, definition()
 				.subtitle(modSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.getId()))
 				.with(
-						sound(new ResourceLocation("random/pop"))
+						sound(ResourceLocation.withDefaultNamespace("random/pop"))
 				));
 		this.add(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK, definition()
 				.subtitle(modSubtitle(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK.getId()))
 				.with(
-						sound(new ResourceLocation("mob/endermen/portal")),
-						sound(new ResourceLocation("mob/endermen/portal2"))
+						sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal")),
+						sound(ResourceLocation.withDefaultNamespace("mob/endermen/portal2"))
 				));
 	}
 

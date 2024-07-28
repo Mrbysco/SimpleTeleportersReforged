@@ -6,13 +6,13 @@
       "item": "simpleteleporters:ender_shard"
     },
     "G": {
-      "tag": "forge:storage_blocks/gold"
+      "tag": "c:storage_blocks/gold"
     },
     "N": {
-      "tag": "forge:ingots/netherite"
+      "tag": "c:ingots/netherite"
     },
     "Q": {
-      "tag": "forge:storage_blocks/quartz"
+      "item": "minecraft:quartz_block"
     }
   },
   "pattern": [
@@ -21,6 +21,7 @@
     "QQQ"
   ],
   "result": {
-    "item": "simpleteleporters:teleporter"
+    "count": 1,
+    "id": "simpleteleporters:teleporter"
   }
 }
