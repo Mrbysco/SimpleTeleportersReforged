@@ -1,6 +1,7 @@
 {
   "block.simpleteleporters.teleporter": "Teleporter",
   "item.simpleteleporters.ender_shard": "Ender Shard",
+  "item.simpleteleporters.hearth_crystal": "Hearth Crystal",
   "simpleteleportersblock.teleporter.crystal_inserted.subtitle.": "Ender Shard inserted",
   "simpleteleportersblock.teleporter.crystal_removed.subtitle.": "Ender Shard removed",
   "simpleteleportersblock.teleporter.teleport.subtitle.": "Teleporter teleports",
@@ -11,7 +12,11 @@
   "text.simpleteleporters.error.unlinked_shard": "This Ender Shard is unlinked!",
   "text.simpleteleporters.error.unlinked_teleporter": "This teleporter's Ender Shard is unlinked!",
   "text.simpleteleporters.error.wrong_dimension": "This teleporter's Ender Shard isn't powerful enough to cross dimensions!",
+  "text.simpleteleporters.hearth_info": "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s",
   "text.simpleteleporters.how_to_link": "%1$s + %2$s on a block to link a position",
+  "text.simpleteleporters.how_to_link_hearth": "%1$s + %2$s on a block to link a position",
+  "text.simpleteleporters.invalid_hearth_target": "Invalid Hearth Crystal target!",
   "text.simpleteleporters.linked": "Linked, %1$s, %2$s, %3$s in %4$s",
+  "text.simpleteleporters.linked_hearth": "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s",
   "text.simpleteleporters.unlinked": "Unlinked"
 }

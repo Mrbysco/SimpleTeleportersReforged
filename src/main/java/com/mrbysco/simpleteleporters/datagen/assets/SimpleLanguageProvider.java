@@ -17,6 +17,7 @@ public class SimpleLanguageProvider extends LanguageProvider {
 	@Override
 	protected void addTranslations() {
 		addItem(SimpleTeleportersItems.ENDER_SHARD, "Ender Shard");
+		addItem(SimpleTeleportersItems.HEARTH_CRYSTAL, "Hearth Crystal");
 		addBlock(SimpleTeleportersBlocks.TELEPORTER, "Teleporter");
 
 		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT, "Teleporter teleports");
@@ -25,8 +26,12 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		addSubtitle(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK, "Ender Shard link established");
 
 		add("text.simpleteleporters.unlinked", "Unlinked");
+		add("text.simpleteleporters.how_to_link_hearth", "%1$s + %2$s on a block to link a position");
+		add("text.simpleteleporters.invalid_hearth_target", "Invalid Hearth Crystal target!");
+		add("text.simpleteleporters.linked_hearth", "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.linked", "Linked, %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.how_to_link", "%1$s + %2$s on a block to link a position");
+		add("text.simpleteleporters.hearth_info", "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.crystal_info", "Linked Ender Shard to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.error.no_crystal", "This teleporter doesn't have an Ender Shard!");
 		add("text.simpleteleporters.error.unlinked_teleporter", "This teleporter's Ender Shard is unlinked!");
