@@ -4,10 +4,10 @@
   "cookingtime": 200,
   "experience": 0.7,
   "ingredient": {
-    "item": "minecraft:ender_pearl"
+    "item": "simpleteleporters:ender_shard"
   },
   "result": {
     "count": 1,
-    "id": "simpleteleporters:ender_shard"
+    "id": "simpleteleporters:hearth_crystal"
   }
 }

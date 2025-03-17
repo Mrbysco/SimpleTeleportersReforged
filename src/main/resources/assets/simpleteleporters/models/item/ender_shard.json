@@ -1,5 +1,13 @@
 {
   "parent": "item/generated",
+  "overrides": [
+    {
+      "model": "simpleteleporters:item/ender_shard_linked",
+      "predicate": {
+        "simpleteleporters:linked": 1.0
+      }
+    }
+  ],
   "textures": {
     "layer0": "simpleteleporters:item/ender_shard"
   }

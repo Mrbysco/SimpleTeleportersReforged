@@ -35,18 +35,25 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.pattern("GNG")
 				.pattern("QQQ")
 				.define('C', SimpleTeleportersItems.ENDER_SHARD.get())
-				.define('G', Tags.Items.STORAGE_BLOCKS_GOLD)
+				.define('G', Tags.Items.INGOTS_GOLD)
 				.define('Q', Blocks.QUARTZ_BLOCK)
-				.define('N', Tags.Items.INGOTS_NETHERITE)
+				.define('N', Tags.Items.GEMS_DIAMOND)
 				.unlockedBy("has_ender_shard", has(SimpleTeleportersItems.ENDER_SHARD.get()))
 				.unlockedBy("has_gold_block", has(Tags.Items.STORAGE_BLOCKS_GOLD))
 				.unlockedBy("has_quartz_block", has(Blocks.QUARTZ_BLOCK))
-				.unlockedBy("has_netherite_ingot", has(Tags.Items.INGOTS_NETHERITE))
+				.unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND))
 				.save(recipeOutput);
 
-		SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.ENDER_EYE), RecipeCategory.TRANSPORTATION,
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.ENDER_PEARL), RecipeCategory.TRANSPORTATION,
 						SimpleTeleportersItems.ENDER_SHARD.get(), 0.7F, 200)
-				.unlockedBy("has_ender_eye", has(Items.ENDER_EYE))
+				.unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
 				.save(recipeOutput, SimpleTeleporters.id("ender_shard"));
+
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(SimpleTeleportersItems.ENDER_SHARD), RecipeCategory.TRANSPORTATION,
+						SimpleTeleportersItems.HEARTH_CRYSTAL.get(), 0.7F, 200)
+				.unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
+				.save(recipeOutput, SimpleTeleporters.id("hearth_crystal"));
+
+
 	}
 }

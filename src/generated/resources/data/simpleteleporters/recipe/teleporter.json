@@ -6,10 +6,10 @@
       "item": "simpleteleporters:ender_shard"
     },
     "G": {
-      "tag": "c:storage_blocks/gold"
+      "tag": "c:ingots/gold"
     },
     "N": {
-      "tag": "c:ingots/netherite"
+      "tag": "c:gems/diamond"
     },
     "Q": {
       "item": "minecraft:quartz_block"

@@ -1,5 +1,7 @@
 package com.mrbysco.simpleteleporters.item;
 
+import com.mojang.serialization.Codec;
+import com.mrbysco.simpleteleporters.SimpleTeleporters;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
@@ -7,9 +9,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,13 +25,21 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class TeleportCrystalItem extends Item {
+
 	public TeleportCrystalItem(Properties settings) {
 		super(settings);
+
 	}
+
 
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
@@ -65,6 +79,8 @@ public class TeleportCrystalItem extends Item {
 		return InteractionResult.PASS;
 	}
 
+
+
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
 		if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
@@ -87,8 +103,9 @@ public class TeleportCrystalItem extends Item {
 			GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
 			BlockPos pos = globalPos.pos();
 			ResourceKey<Level> dimension = globalPos.dimension();
+			String dimensionName = dimension.location().toString();
 			MutableComponent component = Component.translatable("text.simpleteleporters.linked",
-					pos.getX(), pos.getY(), pos.getZ(), dimension.location());
+					pos.getX(), pos.getY(), pos.getZ(), dimensionName);
 			component.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
 
 			tooltip.add(component);

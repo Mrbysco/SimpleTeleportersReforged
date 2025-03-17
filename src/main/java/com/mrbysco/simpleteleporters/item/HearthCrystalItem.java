@@ -3,6 +3,7 @@ package com.mrbysco.simpleteleporters.item;
 import com.mrbysco.simpleteleporters.block.entity.TeleporterBlockEntity;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,18 +29,71 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
 
 public class HearthCrystalItem extends Item {
-
+    boolean isTeleporting = false;
+    int charge = 0;
 
     public HearthCrystalItem(Properties properties) {
         super(new Properties()
                 .fireResistant()
-                .durability(200));
+                .durability(200)
+        );
+    }
+
+    @Override
+    public void inventoryTick(@NotNull ItemStack itemStack, @NotNull Level level, @NotNull Entity entity, int itemSlot, boolean isSelected) {
+
+        if (!this.isTeleporting) {
+            return;
+        }
+        //TODO: cancel tp if player takes damage or moves and config is set to do so
+        if (this.isTeleporting && entity instanceof Player player) {
+            if (this.charge < 100) {
+                this.charge++;
+                if (this.charge == 1) {
+                    level.playSound(player, player.blockPosition(), SoundEvents.PORTAL_TRAVEL, SoundSource.PLAYERS, 0.5F, 0.5F);
+                }
+            } else {
+                this.isTeleporting = false;
+                this.charge = 0;
+                itemStack.setDamageValue(itemStack.getDamageValue() + 50);
+                GlobalPos globalPos = itemStack.get(SimpleTeleportersComponents.GLOBAL_POS);
+                BlockPos pos = globalPos.pos();
+                if (!level.isClientSide()) {
+                    System.out.println("pos = " + pos);
+                    System.out.println("clientside = true ");
+                    level.playSound(player, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 0.5F);
+                    BlockEntity teleporterEntity = level.getBlockEntity(pos.below());
+                    if (teleporterEntity instanceof TeleporterBlockEntity teleporter) {
+                        System.out.println("entity is instance of teleporter");
+                        ServerPlayer serverPlayer = (ServerPlayer) player;
+                        serverPlayer.hurtMarked = true;
+
+                        Vec3 playerPos = new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                        serverPlayer.connection.teleport(playerPos.x(), playerPos.y(), playerPos.z(), serverPlayer.getYRot(), serverPlayer.getXRot());
+                        System.out.println("called server player connection teleport");
+                        serverPlayer.setDeltaMovement(0, 0, 0);
+                        serverPlayer.hasImpulse = true;
+
+                        level.playSound(player, player, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        teleporter.setCooldown(10);
+
+                        BlockEntity down = level.getBlockEntity(pos.below());
+                        if (down instanceof TeleporterBlockEntity tpDown) {
+                            tpDown.setCooldown(10);
+                        }
+                    }
+
+                }
+
+
+            }
+        }
     }
 
     @Override
@@ -46,33 +101,15 @@ public class HearthCrystalItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
-                player.displayClientMessage(Component.literal("Not Yet Bound").withStyle(ChatFormatting.GREEN), true);
+                if (player.isCrouching()) {
+                    return InteractionResultHolder.fail(player.getItemInHand(hand));
+                }
+                player.displayClientMessage(Component.literal("Not Yet Bound").withStyle(ChatFormatting.RED), true);
             } else {
-                level.playSound(null, player.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.8F, 0.5F);
-                player.displayClientMessage(Component.literal("Initiating Teleport!").withStyle(ChatFormatting.RED), true);
-                BlockPos pos = stack.get(SimpleTeleportersComponents.GLOBAL_POS).pos();
-                BlockEntity teleporterEntity = level.getBlockEntity(pos.below());
-                if (teleporterEntity instanceof TeleporterBlockEntity teleporter) {
-                    serverPlayer.hurtMarked = true;
-
-                    Vec3 playerPos = new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-                    serverPlayer.connection.teleport(playerPos.x(), playerPos.y(), playerPos.z(), serverPlayer.getYRot(), serverPlayer.getXRot());
-
-                    serverPlayer.setDeltaMovement(0, 0, 0);
-                    serverPlayer.hasImpulse = true;
-
-                    level.playSound(null, player, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                    teleporter.setCooldown(10);
-
-                    BlockEntity down = level.getBlockEntity(pos.below());
-                    if (down instanceof TeleporterBlockEntity tpDown) {
-                        tpDown.setCooldown(10);
-                    }
-                }
-                else{
-                    player.displayClientMessage(Component.literal("Target block is not a teleporter!").withStyle(ChatFormatting.RED), true);
-                }
+                player.displayClientMessage(Component.literal("Initiating Teleport...").withStyle(ChatFormatting.GREEN), true);
+                this.isTeleporting = true;
             }
+
         }
         return InteractionResultHolder.success(player.getItemInHand(hand));
     }
@@ -82,7 +119,7 @@ public class HearthCrystalItem extends Item {
         if (ctx.isSecondaryUseActive()) {
             Player player = ctx.getPlayer();
 
-            ItemStack stack = ctx.getItemInHand().split(1);
+            ItemStack stack = ctx.getItemInHand();
 
             Level level = ctx.getLevel();
             BlockPos pos = ctx.getClickedPos();
@@ -92,18 +129,13 @@ public class HearthCrystalItem extends Item {
             if (level.getBlockState(pos).is(SimpleTeleportersBlocks.TELEPORTER.get())) {
                 offsetPos = pos.above();
             } else {
-                offsetPos = pos.relative(ctx.getClickedFace());
                 MutableComponent Errormsg = Component.translatable("text.simpleteleporters.invalid_hearth_target");
                 Errormsg.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
                 player.displayClientMessage(Errormsg, true);
-                return InteractionResult.PASS;
+                return InteractionResult.FAIL;
             }
+
             stack.set(SimpleTeleportersComponents.GLOBAL_POS, GlobalPos.of(player.level().dimension(), offsetPos));
-
-
-            if (!player.addItem(stack)) {
-                player.drop(stack, false);
-            }
 
             MutableComponent msg = Component.translatable("text.simpleteleporters.hearth_info",
                     offsetPos.getX(), offsetPos.getY(), offsetPos.getZ(), dimensionName);
@@ -115,7 +147,7 @@ public class HearthCrystalItem extends Item {
 
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -139,10 +171,10 @@ public class HearthCrystalItem extends Item {
         } else {
             GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
             BlockPos pos = globalPos.pos();
-            System.out.println("pos = " + pos);
             ResourceKey<Level> dimension = globalPos.dimension();
+            String dimensionName = dimension.location().toString();
             MutableComponent linked = Component.translatable("text.simpleteleporters.linked_hearth",
-                    pos.getX(), pos.getY(), pos.getZ(), dimension.location());
+                    pos.getX(), pos.getY(), pos.getZ(), dimensionName);
             linked.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
 
             tooltip.add(linked);
