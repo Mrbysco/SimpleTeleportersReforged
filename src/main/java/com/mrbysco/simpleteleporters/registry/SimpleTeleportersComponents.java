@@ -1,6 +1,7 @@
 package com.mrbysco.simpleteleporters.registry;
 
 import com.mrbysco.simpleteleporters.SimpleTeleporters;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -15,5 +16,13 @@ public class SimpleTeleportersComponents {
 			DataComponentType.<GlobalPos>builder()
 					.persistent(GlobalPos.CODEC)
 					.networkSynchronized(GlobalPos.STREAM_CODEC)
+					.build());
+
+	// Add this new component for the teleport timer with a custom-created codec
+	public static final Supplier<DataComponentType<Integer>> TELEPORT_TIMER = DATA_COMPONENT_TYPES.register("teleport_timer", () ->
+			DataComponentType.<Integer>builder()
+					.persistent(Codec.INT)
+					// Create a stream codec similar to how GlobalPos does it
+					.networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT)
 					.build());
 }
