@@ -17,14 +17,16 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -62,7 +64,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+	protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effectApplier, boolean p_451772_) {
 		if (!level.isClientSide() && entity instanceof ServerPlayer player) {
 			if (entity.isShiftKeyDown()) {
 				if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
@@ -101,7 +103,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
 			if (teleporter.hasCrystal()) {
 				ItemStack crystal = teleporter.getCrystal();
@@ -116,7 +118,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 				teleporter.setCrystal(ItemStack.EMPTY);
 
 				level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-				return ItemInteractionResult.SUCCESS;
+				return InteractionResult.SUCCESS;
 			} else {
 				if (!stack.isEmpty() && stack.is(SimpleTeleportersItems.ENDER_SHARD.get())) {
 					if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
@@ -125,14 +127,14 @@ public class TeleporterBlock extends BaseEntityBlock {
 						ItemStack crystal = stack.split(1);
 						teleporter.setCrystal(crystal);
 
-						return ItemInteractionResult.SUCCESS;
+						return InteractionResult.SUCCESS;
 					} else {
 						player.displayClientMessage(Component.translatable("text.simpleteleporters.error.unlinked_shard").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
 					}
 				}
 			}
 		}
-		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+		return InteractionResult.PASS;
 	}
 
 	@Override
@@ -150,12 +152,12 @@ public class TeleporterBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public BlockState updateShape(BlockState state, Direction facing, BlockState neighborState, LevelAccessor levelAccessor, BlockPos pos, BlockPos neighborPos) {
+	protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
 		if (state.getValue(WATERLOGGED)) {
-			levelAccessor.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+			scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
 
-		return super.updateShape(state, facing, neighborState, levelAccessor, pos, neighborPos);
+		return super.updateShape(state, level, scheduledTickAccess, pos, direction, neighborPos, neighborState, random);
 	}
 
 	@Override

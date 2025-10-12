@@ -11,6 +11,6 @@ import java.util.function.Supplier;
 public class SimpleTeleportersBlockEntities {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, SimpleTeleporters.MOD_ID);
 
-	public static final Supplier<BlockEntityType<TeleporterBlockEntity>> TELEPORTER = BLOCK_ENTITY_TYPES.register("teleporter", () -> BlockEntityType.Builder.of(
-			TeleporterBlockEntity::new, SimpleTeleportersBlocks.TELEPORTER.get()).build(null));
+	public static final Supplier<BlockEntityType<TeleporterBlockEntity>> TELEPORTER = BLOCK_ENTITY_TYPES.register("teleporter", () -> new BlockEntityType<>(
+			TeleporterBlockEntity::new, SimpleTeleportersBlocks.TELEPORTER.get()));
 }

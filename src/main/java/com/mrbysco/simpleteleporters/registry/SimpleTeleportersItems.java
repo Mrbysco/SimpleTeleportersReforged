@@ -9,6 +9,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class SimpleTeleportersItems {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SimpleTeleporters.MOD_ID);
 
-	public static final DeferredItem<Item> ENDER_SHARD = ITEMS.register("ender_shard", () -> new TeleportCrystalItem(new Item.Properties().stacksTo(16)));
+	public static final DeferredItem<Item> ENDER_SHARD = ITEMS.registerItem("ender_shard", TeleportCrystalItem::new, new Item.Properties().stacksTo(16));
 	//Put this item in TAB_TRANSPORTATION
 }

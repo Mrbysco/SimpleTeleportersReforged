@@ -8,8 +8,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -19,18 +17,18 @@ import net.neoforged.neoforge.common.Tags;
 import java.util.concurrent.CompletableFuture;
 
 public class SimpleRecipeProvider extends RecipeProvider {
-	public SimpleRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProvider) {
-		super(packOutput, lookupProvider);
+	public SimpleRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+		super(provider, recipeOutput);
 	}
 
 	@Override
-	protected void buildRecipes(RecipeOutput recipeOutput) {
-		ShapelessRecipeBuilder.shapeless(RecipeCategory.TRANSPORTATION, SimpleTeleportersItems.ENDER_SHARD.get())
+	protected void buildRecipes() {
+		shapeless(RecipeCategory.TRANSPORTATION, SimpleTeleportersItems.ENDER_SHARD.get())
 				.requires(SimpleTeleportersItems.ENDER_SHARD.get())
 				.unlockedBy("has_ender_shard", has(SimpleTeleportersItems.ENDER_SHARD.get()))
-				.save(recipeOutput, SimpleTeleporters.id("clear_shard"));
+				.save(output, SimpleTeleporters.id("clear_shard").toString());
 
-		ShapedRecipeBuilder.shaped(RecipeCategory.TRANSPORTATION, SimpleTeleportersBlocks.TELEPORTER.get())
+		shaped(RecipeCategory.TRANSPORTATION, SimpleTeleportersBlocks.TELEPORTER.get())
 				.pattern(" C ")
 				.pattern("GNG")
 				.pattern("QQQ")
@@ -42,11 +40,27 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_gold_block", has(Tags.Items.STORAGE_BLOCKS_GOLD))
 				.unlockedBy("has_quartz_block", has(Blocks.QUARTZ_BLOCK))
 				.unlockedBy("has_netherite_ingot", has(Tags.Items.INGOTS_NETHERITE))
-				.save(recipeOutput);
+				.save(output);
 
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.ENDER_EYE), RecipeCategory.TRANSPORTATION,
 						SimpleTeleportersItems.ENDER_SHARD.get(), 0.7F, 200)
 				.unlockedBy("has_ender_eye", has(Items.ENDER_EYE))
-				.save(recipeOutput, SimpleTeleporters.id("ender_shard"));
+				.save(output);
+	}
+
+	public static class Runner extends RecipeProvider.Runner {
+		public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
+			super(output, completableFuture);
+		}
+
+		@Override
+		protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
+			return new SimpleRecipeProvider(provider, recipeOutput);
+		}
+
+		@Override
+		public String getName() {
+			return "Simple Teleporters Reforged Recipes";
+		}
 	}
 }

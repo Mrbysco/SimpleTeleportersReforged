@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "item": "simpleteleporters:ender_shard"
-    },
-    "G": {
-      "tag": "c:storage_blocks/gold"
-    },
-    "N": {
-      "tag": "c:ingots/netherite"
-    },
-    "Q": {
-      "item": "minecraft:quartz_block"
-    }
+    "C": "simpleteleporters:ender_shard",
+    "G": "#c:storage_blocks/gold",
+    "N": "#c:ingots/netherite",
+    "Q": "minecraft:quartz_block"
   },
   "pattern": [
     " C ",

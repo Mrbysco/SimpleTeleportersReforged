@@ -16,17 +16,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class TeleportCrystalItem extends Item {
 	public TeleportCrystalItem(Properties settings) {
 		super(settings);
 	}
 
+	@NotNull
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		if (ctx.isSecondaryUseActive()) {
@@ -66,23 +69,23 @@ public class TeleportCrystalItem extends Item {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
 		if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 			MutableComponent unlinked = Component.translatable("text.simpleteleporters.unlinked");
 			unlinked.setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
-			tooltip.add(unlinked);
+			tooltipAdder.accept(unlinked);
 
 			Component sneakKey = Component.literal("Sneak");
 			Component useKey = Component.literal("Right Click");
 
-			if (FMLEnvironment.dist.isClient()) {
+			if (FMLEnvironment.getDist().isClient()) {
 				sneakKey = Component.keybind(Minecraft.getInstance().options.keyShift.getName());
 				useKey = Component.keybind(Minecraft.getInstance().options.keyUse.getName());
 			}
 
 			MutableComponent info = Component.translatable("text.simpleteleporters.how_to_link", sneakKey, useKey);
 			info.setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
-			tooltip.add(info);
+			tooltipAdder.accept(info);
 		} else {
 			GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
 			BlockPos pos = globalPos.pos();
@@ -91,7 +94,7 @@ public class TeleportCrystalItem extends Item {
 					pos.getX(), pos.getY(), pos.getZ(), dimension.location());
 			component.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
 
-			tooltip.add(component);
+			tooltipAdder.accept(component);
 		}
 	}
 }

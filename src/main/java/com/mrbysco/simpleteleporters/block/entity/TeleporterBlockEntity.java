@@ -4,14 +4,16 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+
+import java.util.Optional;
 
 public class TeleporterBlockEntity extends BlockEntity {
 	private ItemStack crystal = ItemStack.EMPTY;
@@ -62,28 +64,22 @@ public class TeleporterBlockEntity extends BlockEntity {
 	}
 
 	@Override
-	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.loadAdditional(tag, registries);
+	protected void loadAdditional(ValueInput input) {
+		super.loadAdditional(input);
 
-		if (tag.contains("crystal")) {
-			this.setCrystal(ItemStack.parseOptional(registries, tag.getCompound("crystal")));
-		} else {
-			this.setCrystal(ItemStack.EMPTY);
-		}
-		if (tag.contains("cooldown")) {
-			this.setCooldown(tag.getInt("cooldown"));
-		} else {
-			this.setCooldown(0);
-		}
+		Optional<ItemStack> optionalCrystal = input.read("crystal", ItemStack.OPTIONAL_CODEC);
+		optionalCrystal.ifPresent(this::setCrystal);
+
+		this.setCooldown(input.getIntOr("cooldown", 0));
 	}
 
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-		super.saveAdditional(tag, registries);
+	protected void saveAdditional(ValueOutput output) {
+		super.saveAdditional(output);
 		if (!crystal.isEmpty()) {
-			tag.put("crystal", this.crystal.save(registries, new CompoundTag()));
+			output.store("crystal", ItemStack.CODEC, this.crystal);
 		}
-		tag.putInt("cooldown", cooldown);
+		output.putInt("cooldown", cooldown);
 	}
 
 	public boolean isCoolingDown() {

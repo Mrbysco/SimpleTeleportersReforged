@@ -10,19 +10,20 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class SimpleTeleportersBlocks {
 	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(SimpleTeleporters.MOD_ID);
 
 	public static final DeferredBlock<TeleporterBlock> TELEPORTER = registerBlock("teleporter",
-			() -> new TeleporterBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()
-					.destroyTime(1).explosionResistance(1).lightLevel((state) -> 15)));
+			TeleporterBlock::new, BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()
+					.destroyTime(1).explosionResistance(1).lightLevel((state) -> 15));
 	//Put this item in TAB_TRANSPORTATION
 
-	public static <B extends Block> DeferredBlock<B> registerBlock(String name, Supplier<? extends B> supplier) {
-		DeferredBlock<B> block = SimpleTeleportersBlocks.BLOCKS.register(name, supplier);
-		SimpleTeleportersItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+	public static <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> blockSupplier, BlockBehaviour.Properties blockProperties) {
+		DeferredBlock<B> block = SimpleTeleportersBlocks.BLOCKS.registerBlock(name, blockSupplier, blockProperties);
+		SimpleTeleportersItems.ITEMS.registerItem(name, (properties) -> new BlockItem(block.get(), properties), new Item.Properties().useBlockDescriptionPrefix());
 		return block;
 	}
 }
