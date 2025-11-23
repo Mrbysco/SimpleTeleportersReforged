@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class SimpleTeleportersConfig {
 	public static class Client {
 		public final ModConfigSpec.BooleanValue disableParticles;
+		public final ModConfigSpec.BooleanValue disableNameplate;
 
 		Client(ModConfigSpec.Builder builder) {
 			builder.comment("Client settings")
@@ -14,6 +15,10 @@ public class SimpleTeleportersConfig {
 			disableParticles = builder
 					.comment("Disable the particles shown above an active teleporter [Default: false]")
 					.define("disableParticles", false);
+
+			disableNameplate = builder
+					.comment("Disable the nameplate shown above a teleporter with a named crystal [Default: false]")
+					.define("disableNameplate", false);
 
 			builder.pop();
 		}
