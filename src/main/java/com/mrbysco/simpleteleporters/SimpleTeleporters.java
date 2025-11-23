@@ -1,6 +1,7 @@
 package com.mrbysco.simpleteleporters;
 
 import com.mojang.logging.LogUtils;
+import com.mrbysco.simpleteleporters.client.ClientHandler;
 import com.mrbysco.simpleteleporters.config.SimpleTeleportersConfig;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
@@ -43,6 +44,8 @@ public class SimpleTeleporters {
 		if (dist.isClient()) {
 			container.registerConfig(ModConfig.Type.CLIENT, SimpleTeleportersConfig.clientSpec);
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+
+			eventBus.addListener(ClientHandler::registerEntityRenders);
 		}
 	}
 
