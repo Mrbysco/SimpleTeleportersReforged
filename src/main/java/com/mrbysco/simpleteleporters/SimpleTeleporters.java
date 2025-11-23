@@ -1,6 +1,7 @@
 package com.mrbysco.simpleteleporters;
 
 import com.mojang.logging.LogUtils;
+import com.mrbysco.simpleteleporters.config.SimpleTeleportersConfig;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
@@ -9,8 +10,13 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.slf4j.Logger;
 
@@ -25,7 +31,7 @@ public class SimpleTeleporters {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
-	public SimpleTeleporters(IEventBus eventBus) {
+	public SimpleTeleporters(IEventBus eventBus, ModContainer container, Dist dist) {
 		SimpleTeleportersBlocks.BLOCKS.register(eventBus);
 		SimpleTeleportersBlockEntities.BLOCK_ENTITY_TYPES.register(eventBus);
 		SimpleTeleportersComponents.DATA_COMPONENT_TYPES.register(eventBus);
@@ -33,6 +39,11 @@ public class SimpleTeleporters {
 		SimpleTeleportersSoundEvents.SOUND_EVENTS.register(eventBus);
 
 		eventBus.addListener(this::buildCreativeContents);
+
+		if (dist.isClient()) {
+			container.registerConfig(ModConfig.Type.CLIENT, SimpleTeleportersConfig.clientSpec);
+			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+		}
 	}
 
 	public void buildCreativeContents(final BuildCreativeModeTabContentsEvent event) {
