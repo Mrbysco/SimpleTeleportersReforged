@@ -11,7 +11,6 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class SimpleTeleportersBlocks {
 	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(SimpleTeleporters.MOD_ID);
