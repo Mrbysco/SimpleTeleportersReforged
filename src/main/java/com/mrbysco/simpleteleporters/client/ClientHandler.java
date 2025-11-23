@@ -48,6 +48,7 @@ public class ClientHandler {
 													random.triangle(telePos.getY() + 0.5, 0.2),
 													random.triangle(telePos.getZ() + 0.5, 0.2),
 													0, 0, 0);
+											break;
 										}
 									}
 								}
