@@ -1,6 +1,12 @@
 {
   "block.simpleteleporters.teleporter": "Teleporter",
   "item.simpleteleporters.ender_shard": "Ender Shard",
+  "simpleteleporters.configuration.client": "Client",
+  "simpleteleporters.configuration.client.tooltip": "Client Settings",
+  "simpleteleporters.configuration.disableNameplate": "Disable Nameplate",
+  "simpleteleporters.configuration.disableNameplate.tooltip": "Disable the nameplate shown above a teleporter with a named crystal",
+  "simpleteleporters.configuration.disableParticles": "Disable Particles",
+  "simpleteleporters.configuration.disableParticles.tooltip": "Disable the particles shown above an active teleporter",
   "simpleteleportersblock.teleporter.crystal_inserted.subtitle.": "Ender Shard inserted",
   "simpleteleportersblock.teleporter.crystal_removed.subtitle.": "Ender Shard removed",
   "simpleteleportersblock.teleporter.teleport.subtitle.": "Teleporter teleports",
