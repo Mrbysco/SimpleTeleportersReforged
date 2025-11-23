@@ -2,6 +2,7 @@ package com.mrbysco.simpleteleporters.block;
 
 import com.mojang.serialization.MapCodec;
 import com.mrbysco.simpleteleporters.block.entity.TeleporterBlockEntity;
+import com.mrbysco.simpleteleporters.config.SimpleTeleportersConfig;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
@@ -187,7 +188,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 
 	@Override
 	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-		if (state.getValue(ON)) {
+		if (state.getValue(ON) && !SimpleTeleportersConfig.CLIENT.disableParticles.getAsBoolean()) {
 			for (int i = 0; i < 15; i++) {
 				level.addParticle(ParticleTypes.PORTAL, pos.getX() + 0.2F + (random.nextFloat() / 2), pos.getY() + 0.4F, pos.getZ() + 0.2F + (random.nextFloat() / 2), 0, random.nextFloat(), 0);    // originally method_8406
 			}
