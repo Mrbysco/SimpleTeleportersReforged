@@ -8,6 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import org.jetbrains.annotations.Nullable;
 
 public class SimpleLanguageProvider extends LanguageProvider {
 	public SimpleLanguageProvider(PackOutput packOutput) {
@@ -38,10 +39,27 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.error.unlinked_shard", "This Ender Shard is unlinked!");
 		add("text.simpleteleporters.error.invalid_position", "Teleport position is invalid! Perhaps there's a block in the way?");
 		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Shard isn't powerful enough to cross dimensions!");
+
+		addConfig("client", "Client", "Client Settings");
+		addConfig("disableParticles", "Disable Particles", "Disable the particles shown above an active teleporter");
+		addConfig("disableNameplate", "Disable Nameplate", "Disable the nameplate shown above a teleporter with a named crystal");
 	}
 
 	public void addSubtitle(DeferredHolder<SoundEvent, SoundEvent> sound, String name) {
 		String path = SimpleTeleporters.MOD_ID + sound.getId().getPath() + ".subtitle.";
 		this.add(path, name);
+	}
+
+	/**
+	 * Add the translation for a config entry
+	 *
+	 * @param path        The path of the config entry
+	 * @param name        The name of the config entry
+	 * @param description The description of the config entry (optional in case of targeting "title" or similar entries that have no tooltip)
+	 */
+	private void addConfig(String path, String name, @Nullable String description) {
+		this.add(SimpleTeleporters.MOD_ID + ".configuration." + path, name);
+		if (description != null && !description.isEmpty())
+			this.add(SimpleTeleporters.MOD_ID + ".configuration." + path + ".tooltip", description);
 	}
 }

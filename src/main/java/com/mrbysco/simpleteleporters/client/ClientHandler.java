@@ -1,5 +1,6 @@
 package com.mrbysco.simpleteleporters.client;
 
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -48,6 +50,7 @@ public class ClientHandler {
 													random.triangle(telePos.getY() + 0.5, 0.2),
 													random.triangle(telePos.getZ() + 0.5, 0.2),
 													0, 0, 0);
+											break;
 										}
 									}
 								}
@@ -57,5 +60,9 @@ public class ClientHandler {
 				}
 			}
 		}
+	}
+
+	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
+		event.registerBlockEntityRenderer(SimpleTeleportersBlockEntities.TELEPORTER.get(), TeleporterBER::new);
 	}
 }
