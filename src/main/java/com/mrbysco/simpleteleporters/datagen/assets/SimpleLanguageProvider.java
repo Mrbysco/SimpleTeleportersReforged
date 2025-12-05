@@ -33,6 +33,8 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.linked", "Linked, %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.how_to_link", "%1$s + %2$s on a block to link a position");
 		add("text.simpleteleporters.hearth_info", "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s");
+		add("text.simpleteleporters.hearth_teleporting", "Teleporting in 3 seconds...");
+		add("text.simpleteleporters.hearth_countdown", "Teleporting in %1$s seconds...");
 		add("text.simpleteleporters.crystal_info", "Linked Ender Shard to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.error.no_crystal", "This teleporter doesn't have an Ender Shard!");
 		add("text.simpleteleporters.error.unlinked_teleporter", "This teleporter's Ender Shard is unlinked!");
