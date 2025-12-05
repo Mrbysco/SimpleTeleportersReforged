@@ -1,7 +1,8 @@
 package com.mrbysco.simpleteleporters.item;
 
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments.HearthData;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
-import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -29,155 +30,148 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import java.util.List;
 
 public class HearthCrystalItem extends Item {
+    private static final int TELEPORT_DELAY_TICKS = 60; // 3 seconds
+
     public HearthCrystalItem(Properties properties) {
         super(properties);
     }
 
-    // Handle right-clicking a block (for setting the position)
     @Override
     public InteractionResult useOn(UseOnContext context) {
+        if (!context.isSecondaryUseActive()) {
+            return InteractionResult.PASS;
+        }
+        if (context.getHand() != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
+        }
         Player player = context.getPlayer();
+        if (player == null) return InteractionResult.PASS;
+
         Level level = context.getLevel();
-        BlockPos blockPos = context.getClickedPos();
-        ItemStack itemStack = context.getItemInHand();
-
-        // Check if the player is sneaking (shift-clicking)
-        if (player != null && player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
-                // Set the position component on THIS specific item
-                BlockPos targetPos;
-                if (level.getBlockState(blockPos).getCollisionShape(level, blockPos).isEmpty()) {
-                    targetPos = blockPos;
-                } else if (level.getBlockState(blockPos).is(SimpleTeleportersBlocks.TELEPORTER.get())) {
-                    targetPos = blockPos.above();
-                } else {
-                    targetPos = blockPos.relative(context.getClickedFace());
-                }
-                GlobalPos globalPos = GlobalPos.of(level.dimension(), targetPos);
-                itemStack.set(SimpleTeleportersComponents.GLOBAL_POS, globalPos);
-
-                // Display confirmation message
-                player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_info", targetPos.getX(), targetPos.getY(), targetPos.getZ(), level.dimension().location().toString())
-                        , true);
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide);
-        }
-
-        // If not sneaking, defer to normal use behavior
-        return super.useOn(context);
-    }
-
-    @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player playerIn, InteractionHand handIn) {
-        ItemStack itemstack = playerIn.getItemInHand(handIn);  // Get the specific item that was clicked
-
         if (level.isClientSide) {
-            return InteractionResultHolder.success(itemstack);
+            return InteractionResult.sidedSuccess(true);
         }
 
-        // Check if this specific item has position data
-        if (itemstack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
-            // Set teleport timer on THIS specific item
-            itemstack.set(SimpleTeleportersComponents.TELEPORT_TIMER, 60); // 3 seconds (60 ticks)
-
-            // You might want to play a sound or show a particle effect here
-            playerIn.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_teleporting"), true);
-
-            return InteractionResultHolder.consume(itemstack);
+        BlockPos clickedPos = context.getClickedPos();
+        BlockPos targetPos;
+        if (level.getBlockState(clickedPos).getCollisionShape(level, clickedPos).isEmpty()) {
+            targetPos = clickedPos;
+        } else if (level.getBlockState(clickedPos).is(SimpleTeleportersBlocks.TELEPORTER.get())) {
+            targetPos = clickedPos.above();
+        } else {
+            targetPos = clickedPos.relative(context.getClickedFace());
         }
 
-        // If we couldn't teleport, let the player know
-        playerIn.displayClientMessage(Component.translatable("text.simpleteleporters.invalid_hearth_target"), true);
-        return InteractionResultHolder.pass(itemstack);
+        GlobalPos globalPos = GlobalPos.of(level.dimension(), targetPos);
+        HearthData currentData = player.getData(SimpleTeleportersAttachments.HEARTH_DATA);
+        player.setData(SimpleTeleportersAttachments.HEARTH_DATA, currentData.withBoundLocation(globalPos));
+
+        String dimensionName = level.dimension().location().toString();
+        player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_info",
+                targetPos.getX(), targetPos.getY(), targetPos.getZ(), dimensionName), true);
+        player.playSound(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK.get(), 0.5F,
+                0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+
+        return InteractionResult.sidedSuccess(false);
     }
 
     @Override
-    public void inventoryTick(ItemStack stack, Level level, Entity entityIn, int itemSlot, boolean isSelected) {
-        if (level.isClientSide || !(entityIn instanceof Player)) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (hand != InteractionHand.MAIN_HAND) {
+            return InteractionResultHolder.pass(stack);
+        }
+        if (level.isClientSide) {
+            return InteractionResultHolder.success(stack);
+        }
+
+        HearthData hearthData = player.getData(SimpleTeleportersAttachments.HEARTH_DATA);
+
+        if (hearthData.isTeleporting()) {
+            player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_already_teleporting")
+                    .withStyle(ChatFormatting.RED), true);
+            return InteractionResultHolder.fail(stack);
+        }
+        if (!hearthData.hasBoundLocation()) {
+            player.displayClientMessage(Component.translatable("text.simpleteleporters.invalid_hearth_target")
+                    .withStyle(ChatFormatting.RED), true);
+            return InteractionResultHolder.fail(stack);
+        }
+
+        player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(TELEPORT_DELAY_TICKS));
+        player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_teleporting")
+                .withStyle(ChatFormatting.GOLD), true);
+        return InteractionResultHolder.success(stack);
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        if (level.isClientSide || !(entity instanceof ServerPlayer player)) {
+            return;
+        }
+        HearthData hearthData = player.getData(SimpleTeleportersAttachments.HEARTH_DATA);
+        if (!hearthData.isTeleporting()) {
             return;
         }
 
-        Player player = (Player) entityIn;
-
-        // Check if this specific item has a teleport timer
-        if (stack.has(SimpleTeleportersComponents.TELEPORT_TIMER)) {
-            int timer = stack.get(SimpleTeleportersComponents.TELEPORT_TIMER);
-
-            if (timer > 0) {
-                timer--;
-                stack.set(SimpleTeleportersComponents.TELEPORT_TIMER, timer);
-
-                // Optional: Add particles or sounds every tick while waiting
-            } else {
-                // Timer has expired, remove the timer
-                stack.remove(SimpleTeleportersComponents.TELEPORT_TIMER);
-
-                // Check if this specific item has position data
-                if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
-                    GlobalPos pos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
-
-                    // Get destination information from THIS specific item
-                    double destinationX = pos.pos().getX();
-                    double destinationY = pos.pos().getY();
-                    double destinationZ = pos.pos().getZ();
-                    ResourceKey<Level> dimension = pos.dimension();
-
-                    if (!level.dimension().equals(dimension)) {
-                        ServerPlayer serverPlayer = (ServerPlayer) player;
-                        MinecraftServer server = level.getServer();
-                        if (server != null) {
-                            ServerLevel destinationLevel = server.getLevel(dimension);
-                            if (destinationLevel != null) {
-                                serverPlayer.teleportTo(destinationLevel, destinationX + 0.5D, destinationY, destinationZ + 0.5D, serverPlayer.getYRot(), serverPlayer.getXRot());
-                                serverPlayer.fallDistance = 0;
-                            }
-                        }
-                    } else {
-                        player.teleportTo(destinationX + 0.5D, destinationY, destinationZ + 0.5D);
-                        player.fallDistance = 0;
-                    }
-                }
-            }
+        ItemStack mainHandItem = player.getMainHandItem();
+        if (!(mainHandItem.getItem() instanceof HearthCrystalItem)) {
+            player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(0));
+            player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_cancelled")
+                    .withStyle(ChatFormatting.RED), true);
+            return;
         }
+
+        int timer = hearthData.teleportTimer();
+        if (timer > 1) {
+            player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(timer - 1));
+            return;
+        }
+
+        player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(0));
+        if (!hearthData.hasBoundLocation()) {
+            return;
+        }
+
+        GlobalPos globalPos = hearthData.boundLocation().get();
+        BlockPos targetPos = globalPos.pos();
+        ResourceKey<Level> targetDimension = globalPos.dimension();
+
+        double destX = targetPos.getX() + 0.5D;
+        double destY = targetPos.getY();
+        double destZ = targetPos.getZ() + 0.5D;
+
+        MinecraftServer server = level.getServer();
+        if (server == null) return;
+
+        if (!level.dimension().equals(targetDimension)) {
+            ServerLevel destinationLevel = server.getLevel(targetDimension);
+            if (destinationLevel != null) {
+                player.teleportTo(destinationLevel, destX, destY, destZ, player.getYRot(), player.getXRot());
+            }
+        } else {
+            player.teleportTo(destX, destY, destZ);
+        }
+        player.fallDistance = 0;
+        player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), 1.0F, 1.0F);
     }
 
-
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
-        if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
-            MutableComponent unlinked = Component.translatable("text.simpleteleporters.unlinked");
-            unlinked.setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
-            tooltip.add(unlinked);
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        Component sneakKey = Component.literal("Sneak");
+        Component useKey = Component.literal("Right Click");
 
-            Component sneakKey = Component.literal("Sneak");
-            Component useKey = Component.literal("Right Click");
-
-            if (FMLEnvironment.dist.isClient()) {
-                sneakKey = Component.keybind(Minecraft.getInstance().options.keyShift.getName());
-                useKey = Component.keybind(Minecraft.getInstance().options.keyUse.getName());
-            }
-
-            MutableComponent info = Component.translatable("text.simpleteleporters.how_to_link_hearth", sneakKey, useKey);
-            info.setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
-            tooltip.add(info);
-        } else {
-            GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
-            BlockPos pos = globalPos.pos();
-            ResourceKey<Level> dimension = globalPos.dimension();
-            Component dimensionName = Component.translatable(dimension.location().toLanguageKey("dimension"));
-
-            MutableComponent linked = Component.translatable("text.simpleteleporters.linked_hearth",
-                    pos.getX(), pos.getY(), pos.getZ(), dimensionName);
-            linked.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
-            tooltip.add(linked);
-
-            // Show teleport countdown if active
-            if (stack.has(SimpleTeleportersComponents.TELEPORT_TIMER)) {
-                int timer = stack.getOrDefault(SimpleTeleportersComponents.TELEPORT_TIMER, 0);
-                MutableComponent countdown = Component.translatable("text.simpleteleporters.hearth_countdown", (timer / 20) + 1);
-                countdown.setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD));
-                tooltip.add(countdown);
-            }
+        if (FMLEnvironment.dist.isClient()) {
+            sneakKey = Component.keybind(Minecraft.getInstance().options.keyShift.getName());
+            useKey = Component.keybind(Minecraft.getInstance().options.keyUse.getName());
         }
+
+        MutableComponent bindInfo = Component.translatable("text.simpleteleporters.hearth_bind_hint", sneakKey, useKey);
+        bindInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
+        tooltip.add(bindInfo);
+
+        MutableComponent useInfo = Component.translatable("text.simpleteleporters.hearth_use_hint", useKey);
+        useInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
+        tooltip.add(useInfo);
     }
 }

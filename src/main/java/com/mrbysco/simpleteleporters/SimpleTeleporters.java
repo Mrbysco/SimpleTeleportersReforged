@@ -7,6 +7,7 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -38,6 +39,7 @@ public class SimpleTeleporters {
 		SimpleTeleportersComponents.DATA_COMPONENT_TYPES.register(eventBus);
 		SimpleTeleportersItems.ITEMS.register(eventBus);
 		SimpleTeleportersSoundEvents.SOUND_EVENTS.register(eventBus);
+		SimpleTeleportersAttachments.ATTACHMENT_TYPES.register(eventBus);
 
 		eventBus.addListener(this::buildCreativeContents);
 
