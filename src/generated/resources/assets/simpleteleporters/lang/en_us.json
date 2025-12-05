@@ -1,6 +1,8 @@
 {
   "block.simpleteleporters.teleporter": "Teleporter",
   "item.simpleteleporters.ender_shard": "Ender Shard",
+  "item.simpleteleporters.guide_book": "Simple Teleporters Guide",
+  "item.simpleteleporters.guide_book.tooltip": "Learn about teleportation",
   "item.simpleteleporters.hearth_crystal": "Hearth Crystal",
   "simpleteleporters.configuration.client": "Client",
   "simpleteleporters.configuration.client.tooltip": "Client Settings",

@@ -3,11 +3,12 @@ package com.mrbysco.simpleteleporters;
 import com.mojang.logging.LogUtils;
 import com.mrbysco.simpleteleporters.client.ClientHandler;
 import com.mrbysco.simpleteleporters.config.SimpleTeleportersConfig;
+import com.mrbysco.simpleteleporters.integration.GuideMEIntegration;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
-import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
@@ -33,6 +35,10 @@ public class SimpleTeleporters {
 		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
+	public static boolean isGuideMELoaded() {
+		return ModList.get().isLoaded("guideme");
+	}
+
 	public SimpleTeleporters(IEventBus eventBus, ModContainer container, Dist dist) {
 		SimpleTeleportersBlocks.BLOCKS.register(eventBus);
 		SimpleTeleportersBlockEntities.BLOCK_ENTITY_TYPES.register(eventBus);
@@ -40,6 +46,11 @@ public class SimpleTeleporters {
 		SimpleTeleportersItems.ITEMS.register(eventBus);
 		SimpleTeleportersSoundEvents.SOUND_EVENTS.register(eventBus);
 		SimpleTeleportersAttachments.ATTACHMENT_TYPES.register(eventBus);
+
+		// Register the GuideME guide if GuideME is loaded
+		if (isGuideMELoaded()) {
+			GuideMEIntegration.init();
+		}
 
 		eventBus.addListener(this::buildCreativeContents);
 
@@ -55,6 +66,10 @@ public class SimpleTeleporters {
 		if (event.getTabKey() == CreativeModeTabs.REDSTONE_BLOCKS) {
 			List<ItemStack> stacks = SimpleTeleportersItems.ITEMS.getEntries().stream().map(reg -> new ItemStack(reg.get())).toList();
 			event.acceptAll(stacks);
+			// Add the guide book if GuideME is loaded
+			if (isGuideMELoaded()) {
+				event.accept(GuideMEIntegration.getGuideItem());
+			}
 		}
 	}
 }

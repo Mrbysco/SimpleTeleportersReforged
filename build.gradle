@@ -86,6 +86,10 @@ dependencies {
     compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+
+    // GuideME - In-game guidebook (optional)
+    compileOnly "curse.maven:guideme-1173950:7127444"
+    localRuntime "curse.maven:guideme-1173950:7127444"
 }
 
 jar {

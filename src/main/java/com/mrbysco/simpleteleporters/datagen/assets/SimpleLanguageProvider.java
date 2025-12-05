@@ -49,6 +49,10 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		addConfig("client", "Client", "Client Settings");
 		addConfig("disableParticles", "Disable Particles", "Disable the particles shown above an active teleporter");
 		addConfig("disableNameplate", "Disable Nameplate", "Disable the nameplate shown above a teleporter with a named crystal");
+
+		// GuideME guidebook
+		add("item.simpleteleporters.guide_book", "Simple Teleporters Guide");
+		add("item.simpleteleporters.guide_book.tooltip", "Learn about teleportation");
 	}
 
 	public void addSubtitle(DeferredHolder<SoundEvent, SoundEvent> sound, String name) {
