@@ -20,6 +20,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -37,7 +39,7 @@ public class ClientHandler {
 					RandomSource random = level.getRandom();
 					for (InteractionHand hand : InteractionHand.values()) {
 						ItemStack stack = player.getItemInHand(hand);
-						if (!stack.isEmpty() && stack.is(SimpleTeleportersItems.ENDER_SHARD.get())) {
+						if (!stack.isEmpty() && (stack.is(SimpleTeleportersItems.ENDER_SHARD.get()) || stack.is(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get()))) {
 							if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 								GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
 								ResourceKey<Level> dimension = globalPos.dimension();
@@ -79,5 +81,21 @@ public class ClientHandler {
 			}
 			return DyeColor.WHITE.getTextureDiffuseColor();
 		}, SimpleTeleportersBlocks.TELEPORTER.get());
+	}
+
+	public static void onClientSetup(FMLClientSetupEvent event) {
+		event.enqueueWork(() -> {
+			// Register the "linked" property for ender shards
+			ItemProperties.register(
+					SimpleTeleportersItems.ENDER_SHARD.get(),
+					SimpleTeleporters.id("linked"),
+					(stack, level, entity, seed) -> stack.has(SimpleTeleportersComponents.GLOBAL_POS) ? 1.0F : 0.0F
+			);
+			ItemProperties.register(
+					SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get(),
+					SimpleTeleporters.id("linked"),
+					(stack, level, entity, seed) -> stack.has(SimpleTeleportersComponents.GLOBAL_POS) ? 1.0F : 0.0F
+			);
+		});
 	}
 }

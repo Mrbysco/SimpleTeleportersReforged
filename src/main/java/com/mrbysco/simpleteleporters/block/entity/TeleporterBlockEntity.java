@@ -2,6 +2,7 @@ package com.mrbysco.simpleteleporters.block.entity;
 
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
@@ -44,9 +45,18 @@ public class TeleporterBlockEntity extends BlockEntity {
 		if (getCrystal().isEmpty())
 			return false;
 
+		// Enhanced shards can cross dimensions
+		if (hasEnhancedCrystal()) {
+			return true;
+		}
+
 		GlobalPos globalPos = getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
 		ResourceKey<Level> dimensionKey = globalPos != null ? globalPos.dimension() : Level.OVERWORLD;
 		return dimensionKey.equals(entity.level().dimension());
+	}
+
+	public boolean hasEnhancedCrystal() {
+		return !getCrystal().isEmpty() && getCrystal().is(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get());
 	}
 
 	public ItemStack getCrystal() {

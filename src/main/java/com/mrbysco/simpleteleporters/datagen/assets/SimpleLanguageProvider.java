@@ -21,6 +21,7 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("itemGroup.simpleteleporters", "Simple Teleporters");
 
 		addItem(SimpleTeleportersItems.ENDER_SHARD, "Ender Shard");
+		addItem(SimpleTeleportersItems.ENHANCED_ENDER_SHARD, "Enhanced Ender Shard");
 		addItem(SimpleTeleportersItems.HEARTH_CRYSTAL, "Hearth Crystal");
 		addBlock(SimpleTeleportersBlocks.TELEPORTER, "Teleporter");
 
@@ -48,6 +49,7 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.error.unlinked_shard", "This Ender Shard is unlinked!");
 		add("text.simpleteleporters.error.invalid_position", "Teleport position is invalid! Perhaps there's a block in the way?");
 		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Shard isn't powerful enough to cross dimensions!");
+		add("text.simpleteleporters.enhanced", "Cross-Dimensional");
 
 		addConfig("client", "Client", "Client Settings");
 		addConfig("disableParticles", "Disable Particles", "Disable the particles shown above an active teleporter");

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "simpleteleporters:item/enhanced_ender_shard_linked"
+  }
+}

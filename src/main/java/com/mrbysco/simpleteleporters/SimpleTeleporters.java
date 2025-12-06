@@ -55,6 +55,7 @@ public class SimpleTeleporters {
 
 			eventBus.addListener(ClientHandler::registerEntityRenders);
 			eventBus.addListener(ClientHandler::registerBlockColors);
+			eventBus.addListener(ClientHandler::onClientSetup);
 		}
 	}
 }

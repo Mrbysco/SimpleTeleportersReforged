@@ -11,6 +11,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
@@ -54,6 +55,21 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
 				.save(recipeOutput, SimpleTeleporters.id("hearth_crystal"));
 
+		// Enhanced Ender Shard - smithing upgrade with Echo Shard
+		SmithingTransformRecipeBuilder.smithing(
+						Ingredient.EMPTY, // No template required
+						Ingredient.of(SimpleTeleportersItems.ENDER_SHARD.get()),
+						Ingredient.of(Items.ECHO_SHARD),
+						RecipeCategory.TRANSPORTATION,
+						SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get())
+				.unlocks("has_ender_shard", has(SimpleTeleportersItems.ENDER_SHARD.get()))
+				.unlocks("has_echo_shard", has(Items.ECHO_SHARD))
+				.save(recipeOutput, SimpleTeleporters.id("enhanced_ender_shard_smithing"));
 
+		// Clear recipe for enhanced shard
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.TRANSPORTATION, SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get())
+				.requires(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get())
+				.unlockedBy("has_enhanced_ender_shard", has(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get()))
+				.save(recipeOutput, SimpleTeleporters.id("clear_enhanced_shard"));
 	}
 }
