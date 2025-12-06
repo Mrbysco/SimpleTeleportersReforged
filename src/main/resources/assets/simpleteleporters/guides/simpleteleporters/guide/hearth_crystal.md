@@ -41,6 +41,18 @@ The Hearth Crystal provides personal teleportation to a saved home location. Unl
 2. **Right-click** to begin a 3-second teleportation countdown
 3. Keep holding the crystal until the teleport completes
 
+## Charges
+
+The Hearth Crystal has **20 charges**. Each teleport consumes 1 charge. When depleted, the crystal cannot teleport until recharged.
+
+### Recharging
+
+Craft your depleted Hearth Crystal with an Ender Pearl to fully restore all 20 charges:
+
+<Recipe id="simpleteleporters:recharge_hearth_crystal" />
+
+The durability bar on the item shows remaining charges - green when full, yellow when low, and red when nearly empty.
+
 ## Important Notes
 
 - **Main Hand Only**: The Hearth Crystal only works when held in your main hand
@@ -48,6 +60,7 @@ The Hearth Crystal provides personal teleportation to a saved home location. Unl
 - **One at a Time**: You cannot start another teleport while one is already pending
 - **Cross-Dimensional**: Works across dimensions - teleport home from the Nether or End
 - **Personal Location**: Since the location is saved on your player, any Hearth Crystal can take you home
+- **Charges**: 20 uses before needing to recharge with an Ender Pearl
 
 ## Tips
 
@@ -55,3 +68,4 @@ The Hearth Crystal provides personal teleportation to a saved home location. Unl
 - The 3-second delay gives you time to cancel if needed (just switch items)
 - Multiple players can each have their own hearth location
 - Unlike the Ender Shard system, you only need one Hearth Crystal - you can't have multiple destinations
+- Keep an Ender Pearl handy to recharge your crystal when charges run low

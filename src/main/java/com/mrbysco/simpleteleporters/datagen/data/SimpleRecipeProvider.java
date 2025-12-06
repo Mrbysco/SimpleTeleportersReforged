@@ -71,5 +71,12 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.requires(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get())
 				.unlockedBy("has_enhanced_ender_shard", has(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get()))
 				.save(recipeOutput, SimpleTeleporters.id("clear_enhanced_shard"));
+
+		// Recharge hearth crystal with ender pearl
+		ShapelessRecipeBuilder.shapeless(RecipeCategory.TRANSPORTATION, SimpleTeleportersItems.HEARTH_CRYSTAL.get())
+				.requires(SimpleTeleportersItems.HEARTH_CRYSTAL.get())
+				.requires(Items.ENDER_PEARL)
+				.unlockedBy("has_hearth_crystal", has(SimpleTeleportersItems.HEARTH_CRYSTAL.get()))
+				.save(recipeOutput, SimpleTeleporters.id("recharge_hearth_crystal"));
 	}
 }

@@ -25,4 +25,11 @@ public class SimpleTeleportersComponents {
 					// Create a stream codec similar to how GlobalPos does it
 					.networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT)
 					.build());
+
+	// Charges component for Hearth Crystal
+	public static final Supplier<DataComponentType<Integer>> CHARGES = DATA_COMPONENT_TYPES.register("charges", () ->
+			DataComponentType.<Integer>builder()
+					.persistent(Codec.INT)
+					.networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT)
+					.build());
 }

@@ -22,7 +22,7 @@ The Ender Shard is the key component for linking <ItemLink id="simpleteleporters
 
 ## Recipe
 
-<RecipeFor id="simpleteleporters:ender_shard" />
+<Recipe id="simpleteleporters:ender_shard" />
 
 </Column>
 </Row>

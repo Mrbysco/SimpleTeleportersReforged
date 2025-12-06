@@ -3,6 +3,7 @@ package com.mrbysco.simpleteleporters.item;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersAttachments.HearthData;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
+import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,6 +16,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -31,10 +33,40 @@ import java.util.List;
 
 public class HearthCrystalItem extends Item {
     private static final int TELEPORT_DELAY_TICKS = 60; // 3 seconds
+    public static final int MAX_CHARGES = 20;
 
     public HearthCrystalItem(Properties properties) {
         super(properties);
     }
+
+    public static int getCharges(ItemStack stack) {
+        return stack.getOrDefault(SimpleTeleportersComponents.CHARGES, MAX_CHARGES);
+    }
+
+    public static void setCharges(ItemStack stack, int charges) {
+        stack.set(SimpleTeleportersComponents.CHARGES, Mth.clamp(charges, 0, MAX_CHARGES));
+    }
+
+    public static void consumeCharge(ItemStack stack) {
+        setCharges(stack, getCharges(stack) - 1);
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        return getCharges(stack) < MAX_CHARGES;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        return Math.round(13.0F * getCharges(stack) / MAX_CHARGES);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        float ratio = (float) getCharges(stack) / MAX_CHARGES;
+        return Mth.hsvToRgb(ratio / 3.0F, 1.0F, 1.0F);
+    }
+
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -97,6 +129,11 @@ public class HearthCrystalItem extends Item {
                     .withStyle(ChatFormatting.RED), true);
             return InteractionResultHolder.fail(stack);
         }
+        if (getCharges(stack) <= 0) {
+            player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_no_charges")
+                    .withStyle(ChatFormatting.RED), true);
+            return InteractionResultHolder.fail(stack);
+        }
 
         player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(TELEPORT_DELAY_TICKS));
         player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_teleporting")
@@ -154,10 +191,17 @@ public class HearthCrystalItem extends Item {
         }
         player.fallDistance = 0;
         player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), 1.0F, 1.0F);
+        consumeCharge(mainHandItem);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        int charges = getCharges(stack);
+        ChatFormatting chargeColor = charges > 5 ? ChatFormatting.GREEN : (charges > 0 ? ChatFormatting.YELLOW : ChatFormatting.RED);
+        MutableComponent chargesInfo = Component.translatable("text.simpleteleporters.hearth_charges", charges, MAX_CHARGES);
+        chargesInfo.setStyle(Style.EMPTY.withColor(chargeColor));
+        tooltip.add(chargesInfo);
+
         Component sneakKey = Component.literal("Sneak");
         Component useKey = Component.literal("Right Click");
 
@@ -173,5 +217,9 @@ public class HearthCrystalItem extends Item {
         MutableComponent useInfo = Component.translatable("text.simpleteleporters.hearth_use_hint", useKey);
         useInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
         tooltip.add(useInfo);
+
+        MutableComponent repairInfo = Component.translatable("text.simpleteleporters.hearth_repair_hint");
+        repairInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
+        tooltip.add(repairInfo);
     }
 }
