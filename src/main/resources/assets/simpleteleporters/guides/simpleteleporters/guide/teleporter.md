@@ -40,8 +40,15 @@ The Teleporter is a block that allows instant teleportation between linked locat
 
 Stand on an active Teleporter (one with portal particles) and **sneak** to teleport to the linked destination.
 
+## Dyeing
+
+Teleporters can be dyed any of the 16 vanilla colors to help organize your teleporter network. Simply **right-click** a Teleporter with any dye to change the color of its corner accents. The default color is white.
+
+This is purely cosmetic but useful for color-coding destinations (e.g., red for the Nether hub, blue for ocean bases).
+
 ## Features
 
+- **Dyeable**: Right-click with any dye to customize the corner accent color
 - **Portal Particles**: Active Teleporters display portal particles when they have a linked Ender Shard
 - **Cooldown**: A brief cooldown prevents instant re-teleportation
 - **Waterloggable**: Can be placed underwater
