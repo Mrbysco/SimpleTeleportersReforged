@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "minecraft:echo_shard"
+  },
+  "base": {
+    "item": "simpleteleporters:ender_shard"
+  },
+  "result": {
+    "count": 1,
+    "id": "simpleteleporters:enhanced_ender_shard"
+  },
+  "template": []
+}
