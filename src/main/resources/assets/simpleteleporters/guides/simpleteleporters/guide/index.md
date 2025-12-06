@@ -16,7 +16,7 @@ Welcome to Simple Teleporters! This mod provides easy-to-use teleportation mecha
 
 ### Teleporter Network
 
-Create a network of <ItemLink id="simpleteleporters:teleporter" /> blocks linked by <ItemLink id="simpleteleporters:ender_shard" /> items to quickly travel between locations.
+Create a network of <ItemLink id="simpleteleporters:teleporter" /> blocks linked by <ItemLink id="simpleteleporters:ender_shard" /> items to quickly travel between locations. Upgrade to an <ItemLink id="simpleteleporters:enhanced_ender_shard" /> for cross-dimensional travel!
 
 </Column>
 <Column>

@@ -48,6 +48,12 @@ The Ender Shard is the key component for linking <ItemLink id="simpleteleporters
   - Clicking on a Teleporter binds to one block above it (so you land on top)
   - Otherwise, binds to the clicked face of the block
 
+## Upgrading
+
+Ender Shards can only teleport within the same dimension. To enable **cross-dimensional teleportation**, upgrade your Ender Shard to an <ItemLink id="simpleteleporters:enhanced_ender_shard" /> at a Smithing Table using an Echo Shard.
+
+The linked position is preserved during the upgrade!
+
 ## Tips
 
 - Keep spare unlinked Ender Shards for quickly setting up new teleport destinations

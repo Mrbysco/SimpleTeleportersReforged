@@ -42,7 +42,7 @@ Stand on an active Teleporter (one with portal particles) and **sneak** to telep
 
 ## Dyeing
 
-Teleporters can be dyed any of the 16 vanilla colors to help organize your teleporter network. Simply **right-click** a Teleporter with any dye to change the color of its corner accents. The default color is white.
+Teleporters can be dyed any of the 16 vanilla colors to help organize your teleporter network. Simply **right-click** a Teleporter with any dye to change the color of its quartz base and platform. The default color is white.
 
 This is purely cosmetic but useful for color-coding destinations (e.g., red for the Nether hub, blue for ocean bases).
 
@@ -60,13 +60,13 @@ The teleporter only activates on the **rising edge** of a redstone signal (when 
 
 ## Features
 
-- **Dyeable**: Right-click with any dye to customize the corner accent color
+- **Dyeable**: Right-click with any dye to customize the quartz base color
 - **Redstone Activated**: Send a redstone signal to teleport all entities on the pad
 - **Entity Teleportation**: Teleports players, mobs, animals, and more
 - **Portal Particles**: Active Teleporters display portal particles when they have a linked Ender Shard
 - **Cooldown**: A brief cooldown prevents instant re-teleportation
 - **Waterloggable**: Can be placed underwater
-- **Dimension Support**: Works within the same dimension only
+- **Dimension Support**: Same dimension with Ender Shards, cross-dimensional with <ItemLink id="simpleteleporters:enhanced_ender_shard" />
 
 ## Tips
 
