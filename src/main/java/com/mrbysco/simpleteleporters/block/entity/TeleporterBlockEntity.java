@@ -24,6 +24,7 @@ public class TeleporterBlockEntity extends BlockEntity {
 	private ItemStack crystal = ItemStack.EMPTY;
 	private int cooldown = 0;
 	private DyeColor color = DyeColor.WHITE;
+	private boolean powered = false;
 
 	public TeleporterBlockEntity(BlockPos pos, BlockState state) {
 		super(SimpleTeleportersBlockEntities.TELEPORTER.get(), pos, state);
@@ -88,6 +89,7 @@ public class TeleporterBlockEntity extends BlockEntity {
 		} else {
 			this.color = DyeColor.WHITE;
 		}
+		this.powered = tag.getBoolean("powered");
 	}
 
 	@Override
@@ -98,6 +100,7 @@ public class TeleporterBlockEntity extends BlockEntity {
 		}
 		tag.putInt("cooldown", cooldown);
 		tag.putInt("color", color.getId());
+		tag.putBoolean("powered", powered);
 	}
 
 	public boolean isCoolingDown() {
@@ -127,6 +130,15 @@ public class TeleporterBlockEntity extends BlockEntity {
 			BlockState state = getLevel().getBlockState(getBlockPos());
 			getLevel().sendBlockUpdated(getBlockPos(), state, state, 3);
 		}
+	}
+
+	public boolean wasPowered() {
+		return powered;
+	}
+
+	public void setPowered(boolean powered) {
+		this.powered = powered;
+		setChanged();
 	}
 
 	@Nullable

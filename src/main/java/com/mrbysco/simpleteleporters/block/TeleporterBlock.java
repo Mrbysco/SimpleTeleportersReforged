@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -43,10 +44,13 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.List;
 
 public class TeleporterBlock extends BaseEntityBlock {
 	public static final MapCodec<TeleporterBlock> CODEC = simpleCodec(TeleporterBlock::new);
@@ -223,5 +227,75 @@ public class TeleporterBlock extends BaseEntityBlock {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return createTickerHelper(type, SimpleTeleportersBlockEntities.TELEPORTER.get(), level.isClientSide() ? null : TeleporterBlockEntity::serverTick);
+	}
+
+	@Override
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
+			boolean isPowered = level.hasNeighborSignal(pos);
+			boolean wasPowered = teleporter.wasPowered();
+
+			// Only trigger on rising edge (unpowered -> powered)
+			if (isPowered && !wasPowered) {
+				teleportAllEntities(level, pos, teleporter);
+			}
+
+			teleporter.setPowered(isPowered);
+		}
+	}
+
+	/**
+	 * Teleports all entities standing on the teleporter to the linked destination.
+	 */
+	private void teleportAllEntities(Level level, BlockPos pos, TeleporterBlockEntity teleporter) {
+		if (!teleporter.hasCrystal() || teleporter.isCoolingDown()) {
+			return;
+		}
+
+		BlockPos teleportPos = teleporter.getTeleportPos();
+		if (teleportPos == null || level.getBlockState(teleportPos).isSuffocating(level, teleportPos)) {
+			return;
+		}
+
+		// Get all entities standing on the teleporter
+		AABB area = new AABB(pos).inflate(0.1, 0.5, 0.1).move(0, 0.5, 0);
+		List<Entity> entities = level.getEntities(null, area);
+
+		if (entities.isEmpty()) {
+			return;
+		}
+
+		boolean teleportedAny = false;
+		for (Entity entity : entities) {
+			// Check dimension compatibility
+			if (!teleporter.isInDimension(entity)) {
+				continue;
+			}
+
+			Vec3 targetPos = new Vec3(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5);
+
+			if (entity instanceof ServerPlayer player) {
+				player.hurtMarked = true;
+				player.connection.teleport(targetPos.x(), targetPos.y(), targetPos.z(), entity.getYRot(), entity.getXRot());
+				player.setDeltaMovement(0, 0, 0);
+				player.hasImpulse = true;
+			} else {
+				entity.teleportTo(targetPos.x(), targetPos.y(), targetPos.z());
+				entity.setDeltaMovement(0, 0, 0);
+			}
+
+			teleportedAny = true;
+		}
+
+		if (teleportedAny) {
+			level.playSound(null, pos, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+			teleporter.setCooldown(10);
+
+			// Also set cooldown on destination teleporter if present
+			BlockEntity down = level.getBlockEntity(teleportPos.below());
+			if (down instanceof TeleporterBlockEntity tpDown) {
+				tpDown.setCooldown(10);
+			}
+		}
 	}
 }

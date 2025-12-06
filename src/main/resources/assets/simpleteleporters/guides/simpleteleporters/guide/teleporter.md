@@ -46,9 +46,23 @@ Teleporters can be dyed any of the 16 vanilla colors to help organize your telep
 
 This is purely cosmetic but useful for color-coding destinations (e.g., red for the Nether hub, blue for ocean bases).
 
+## Redstone Activation
+
+Teleporters can be activated with a **redstone signal**! When a teleporter receives a redstone pulse, it will teleport **all entities** standing on it to the linked destination - including players, mobs, animals, and items.
+
+This enables powerful automation possibilities:
+- Automatic mob farms that teleport mobs to a collection area
+- Timed player transportation systems using redstone clocks
+- Pressure plate triggers for hands-free teleportation
+- Button-activated teleport stations
+
+The teleporter only activates on the **rising edge** of a redstone signal (when it changes from unpowered to powered), preventing continuous teleportation from sustained signals.
+
 ## Features
 
 - **Dyeable**: Right-click with any dye to customize the corner accent color
+- **Redstone Activated**: Send a redstone signal to teleport all entities on the pad
+- **Entity Teleportation**: Teleports players, mobs, animals, and more
 - **Portal Particles**: Active Teleporters display portal particles when they have a linked Ender Shard
 - **Cooldown**: A brief cooldown prevents instant re-teleportation
 - **Waterloggable**: Can be placed underwater
