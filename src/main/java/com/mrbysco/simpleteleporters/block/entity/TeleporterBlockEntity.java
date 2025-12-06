@@ -150,9 +150,10 @@ public class TeleporterBlockEntity extends BlockEntity {
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider registries) {
 		DyeColor oldColor = this.color;
+		ItemStack oldCrystal = this.crystal;
 		super.onDataPacket(net, pkt, registries);
-		// Trigger re-render if color changed
-		if (level != null && level.isClientSide() && oldColor != this.color) {
+		// Trigger re-render if color or crystal changed
+		if (level != null && level.isClientSide() && (oldColor != this.color || !ItemStack.matches(oldCrystal, this.crystal))) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 		}
 	}
@@ -167,9 +168,10 @@ public class TeleporterBlockEntity extends BlockEntity {
 	@Override
 	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
 		DyeColor oldColor = this.color;
+		ItemStack oldCrystal = this.crystal;
 		loadAdditional(tag, registries);
-		// Trigger re-render if color changed on client
-		if (level != null && level.isClientSide() && oldColor != this.color) {
+		// Trigger re-render if color or crystal changed on client
+		if (level != null && level.isClientSide() && (oldColor != this.color || !ItemStack.matches(oldCrystal, this.crystal))) {
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 		}
 	}
