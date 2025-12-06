@@ -15,7 +15,7 @@ A lightweight teleportation mod that adds craftable teleporter blocks and portab
 - Link teleporters using Ender Shards - sneak + right-click to bind a shard to a teleporter's location
 - Step on a teleporter with a linked shard to instantly teleport
 - Dye teleporters any of the 16 colors by right-clicking with dye
-- Redstone controllable - disable teleportation with a redstone signal
+- Redstone controllable - trigger teleportation with a redstone signal
 - Can teleport any entity, not just players
 
 ### Ender Shard
