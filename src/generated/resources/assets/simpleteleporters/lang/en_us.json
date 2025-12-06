@@ -4,6 +4,7 @@
   "item.simpleteleporters.guide_book": "Simple Teleporters Guide",
   "item.simpleteleporters.guide_book.tooltip": "Learn about teleportation",
   "item.simpleteleporters.hearth_crystal": "Hearth Crystal",
+  "itemGroup.simpleteleporters": "Simple Teleporters",
   "simpleteleporters.configuration.client": "Client",
   "simpleteleporters.configuration.client.tooltip": "Client Settings",
   "simpleteleporters.configuration.disableNameplate": "Disable Nameplate",

@@ -17,6 +17,9 @@ public class SimpleLanguageProvider extends LanguageProvider {
 
 	@Override
 	protected void addTranslations() {
+		// Creative tab
+		add("itemGroup.simpleteleporters", "Simple Teleporters");
+
 		addItem(SimpleTeleportersItems.ENDER_SHARD, "Ender Shard");
 		addItem(SimpleTeleportersItems.HEARTH_CRYSTAL, "Hearth Crystal");
 		addBlock(SimpleTeleportersBlocks.TELEPORTER, "Teleporter");
