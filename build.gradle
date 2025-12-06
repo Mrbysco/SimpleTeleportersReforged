@@ -90,6 +90,9 @@ dependencies {
     // GuideME - In-game guidebook (optional)
     compileOnly "curse.maven:guideme-1173950:7127444"
     localRuntime "curse.maven:guideme-1173950:7127444"
+
+    // Jade - Tooltip mod (dev environment only)
+    localRuntime "curse.maven:jade-324717:6853386"
 }
 
 jar {
