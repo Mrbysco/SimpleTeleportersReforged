@@ -1,5 +1,7 @@
 package com.mrbysco.simpleteleporters.item;
 
+import com.mojang.serialization.Codec;
+import com.mrbysco.simpleteleporters.SimpleTeleporters;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
@@ -7,29 +9,39 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import java.util.List;
 
 public class TeleportCrystalItem extends Item {
+
 	public TeleportCrystalItem(Properties settings) {
 		super(settings);
+
 	}
 
-	@NotNull
+
 	@Override
 	public InteractionResult useOn(UseOnContext ctx) {
 		if (ctx.isSecondaryUseActive()) {
@@ -68,24 +80,25 @@ public class TeleportCrystalItem extends Item {
 		return InteractionResult.PASS;
 	}
 
-	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+
+
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
 		if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 			MutableComponent unlinked = Component.translatable("text.simpleteleporters.unlinked");
 			unlinked.setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
-			tooltipAdder.accept(unlinked);
+			tooltip.add(unlinked);
 
 			Component sneakKey = Component.literal("Sneak");
 			Component useKey = Component.literal("Right Click");
 
-			if (FMLEnvironment.getDist().isClient()) {
+			if (FMLEnvironment.getDist() == Dist.CLIENT) {
 				sneakKey = Component.keybind(Minecraft.getInstance().options.keyShift.getName());
 				useKey = Component.keybind(Minecraft.getInstance().options.keyUse.getName());
 			}
 
 			MutableComponent info = Component.translatable("text.simpleteleporters.how_to_link", sneakKey, useKey);
 			info.setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
-			tooltipAdder.accept(info);
+			tooltip.add(info);
 		} else {
 			GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
 			BlockPos pos = globalPos.pos();
@@ -95,7 +108,7 @@ public class TeleportCrystalItem extends Item {
 					pos.getX(), pos.getY(), pos.getZ(), dimensionName);
 			component.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
 
-			tooltipAdder.accept(component);
+			tooltip.add(component);
 		}
 	}
 }

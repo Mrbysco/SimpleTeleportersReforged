@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "simpleteleporters:enhanced_ender_shard"
+  ],
+  "result": {
+    "count": 1,
+    "id": "simpleteleporters:enhanced_ender_shard"
+  }
+}

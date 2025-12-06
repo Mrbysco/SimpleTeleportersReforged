@@ -24,5 +24,7 @@ public class SimpleModelProvider extends ModelProvider {
 		);
 
 		itemModels.generateFlatItem(SimpleTeleportersItems.ENDER_SHARD.get(), ModelTemplates.FLAT_ITEM);
+		itemModels.generateFlatItem(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get(), ModelTemplates.FLAT_ITEM);
+		itemModels.generateFlatItem(SimpleTeleportersItems.HEARTH_CRYSTAL.get(), ModelTemplates.FLAT_ITEM);
 	}
 }

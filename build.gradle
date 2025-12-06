@@ -81,11 +81,12 @@ dependencies {
     localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
     // GuideME - In-game guidebook (optional)
-    compileOnly "curse.maven:guideme-1173950:7127444"
-    localRuntime "curse.maven:guideme-1173950:7127444"
+    compileOnly "curse.maven:guideme-1173950:7127429"
+    localRuntime "curse.maven:guideme-1173950:7127429"
 
     // Jade - Tooltip mod (dev environment only)
-    localRuntime "curse.maven:jade-324717:6853386"
+    // Commented out until 1.21.10 compatible version is available
+    // localRuntime "curse.maven:jade-324717:6853386"
 }
 
 jar {

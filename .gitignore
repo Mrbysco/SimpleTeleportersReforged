@@ -24,3 +24,8 @@ runs
 run-data
 
 repo
+src/generated/resources/.cache/
+
+# Ignore markdown files in root except README
+/*.md
+!/[Rr][Ee][Aa][Dd][Mm][Ee].[Mm][Dd]

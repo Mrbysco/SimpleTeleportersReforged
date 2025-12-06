@@ -10,10 +10,17 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+
+import java.util.Set;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
@@ -22,6 +29,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -42,10 +51,13 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.List;
 
 public class TeleporterBlock extends BaseEntityBlock {
 	public static final MapCodec<TeleporterBlock> CODEC = simpleCodec(TeleporterBlock::new);
@@ -74,25 +86,43 @@ public class TeleporterBlock extends BaseEntityBlock {
 					} else if (!teleporter.isInDimension(entity)) {
 						player.displayClientMessage(Component.translatable("text.simpleteleporters.error.wrong_dimension").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
 					} else if (!teleporter.isCoolingDown()) {
-						BlockPos teleportPos = teleporter.getTeleportPos();
-
-						if (teleportPos == null) {
+						GlobalPos globalPos = teleporter.getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
+						if (globalPos == null) {
 							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.unlinked_teleporter").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
-						} else if (level.getBlockState(teleportPos).isSuffocating(level, teleportPos)) {
+							return;
+						}
+
+						BlockPos teleportPos = globalPos.pos();
+						ResourceKey<Level> targetDimension = globalPos.dimension();
+						MinecraftServer server = level.getServer();
+						ServerLevel targetLevel = server != null ? server.getLevel(targetDimension) : null;
+
+						if (targetLevel == null) {
+							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.invalid_position").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+						} else if (targetLevel.getBlockState(teleportPos).isSuffocating(targetLevel, teleportPos)) {
 							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.invalid_position").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
 						} else {
-							player.hurtMarked = true;
+							Vec3 targetPos = new Vec3(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5);
 
-							Vec3 playerPos = new Vec3(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5);
-							player.connection.teleport(playerPos.x(), playerPos.y(), playerPos.z(), entity.getYRot(), entity.getXRot());
+							// Handle cross-dimensional or same-dimension teleport
+							if (targetDimension.equals(level.dimension())) {
+								// Same dimension - simple teleport
+								player.hurtMarked = true;
+								player.connection.teleport(targetPos.x(), targetPos.y(), targetPos.z(), entity.getYRot(), entity.getXRot());
+							} else {
+								// Cross-dimensional teleport
+								player.teleportTo(targetLevel, targetPos.x(), targetPos.y(), targetPos.z(),
+										Set.of(), entity.getYRot(), entity.getXRot(), true);
+							}
 
 							player.setDeltaMovement(0, 0, 0);
 							player.hasImpulse = true;
 
-							level.playSound(null, player, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+							level.playSound(null, pos, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
 							teleporter.setCooldown(10);
 
-							BlockEntity down = level.getBlockEntity(teleportPos.below());
+							// Set cooldown on destination teleporter if present
+							BlockEntity down = targetLevel.getBlockEntity(teleportPos.below());
 							if (down instanceof TeleporterBlockEntity tpDown) {
 								tpDown.setCooldown(10);
 							}
@@ -106,6 +136,23 @@ public class TeleporterBlock extends BaseEntityBlock {
 	@Override
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
+			// Handle dyeing with a dye - works with or without sneaking
+			if (stack.getItem() instanceof DyeItem dyeItem) {
+				DyeColor newColor = dyeItem.getDyeColor();
+				if (teleporter.getColor() != newColor) {
+					if (!level.isClientSide()) {
+						teleporter.setColor(newColor);
+						if (!player.getAbilities().instabuild) {
+							stack.shrink(1);
+						}
+					}
+					level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+					level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+					return InteractionResult.SUCCESS;
+				}
+				return InteractionResult.CONSUME;
+			}
+
 			if (teleporter.hasCrystal()) {
 				ItemStack crystal = teleporter.getCrystal();
 
@@ -121,7 +168,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 				level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 				return InteractionResult.SUCCESS;
 			} else {
-				if (!stack.isEmpty() && stack.is(SimpleTeleportersItems.ENDER_SHARD.get())) {
+				if (!stack.isEmpty() && (stack.is(SimpleTeleportersItems.ENDER_SHARD.get()) || stack.is(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get()))) {
 					if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 						player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.get(), 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
 						level.setBlockAndUpdate(pos, state.setValue(ON, true));
@@ -205,5 +252,98 @@ public class TeleporterBlock extends BaseEntityBlock {
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return createTickerHelper(type, SimpleTeleportersBlockEntities.TELEPORTER.get(), level.isClientSide() ? null : TeleporterBlockEntity::serverTick);
+	}
+
+	protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+		if (!level.isClientSide() && level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
+			boolean isPowered = level.hasNeighborSignal(pos);
+			boolean wasPowered = teleporter.wasPowered();
+
+			// Only trigger on rising edge (unpowered -> powered)
+			if (isPowered && !wasPowered) {
+				teleportAllEntities(level, pos, teleporter);
+			}
+
+			teleporter.setPowered(isPowered);
+		}
+	}
+
+	/**
+	 * Teleports all entities standing on the teleporter to the linked destination.
+	 */
+	private void teleportAllEntities(Level level, BlockPos pos, TeleporterBlockEntity teleporter) {
+		if (!teleporter.hasCrystal() || teleporter.isCoolingDown()) {
+			return;
+		}
+
+		GlobalPos globalPos = teleporter.getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
+		if (globalPos == null) {
+			return;
+		}
+
+		BlockPos teleportPos = globalPos.pos();
+		ResourceKey<Level> targetDimension = globalPos.dimension();
+		MinecraftServer server = level.getServer();
+		ServerLevel targetLevel = server != null ? server.getLevel(targetDimension) : null;
+
+		if (targetLevel == null || targetLevel.getBlockState(teleportPos).isSuffocating(targetLevel, teleportPos)) {
+			return;
+		}
+
+		// Get all entities standing on the teleporter
+		AABB area = new AABB(pos).inflate(0.1, 0.5, 0.1).move(0, 0.5, 0);
+		List<Entity> entities = level.getEntities(null, area);
+
+		if (entities.isEmpty()) {
+			return;
+		}
+
+		boolean teleportedAny = false;
+		Vec3 targetPos = new Vec3(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5);
+		boolean crossDimensional = !targetDimension.equals(level.dimension());
+
+		for (Entity entity : entities) {
+			// Check dimension compatibility
+			if (!teleporter.isInDimension(entity)) {
+				continue;
+			}
+
+			if (entity instanceof ServerPlayer player) {
+				if (crossDimensional) {
+					// Cross-dimensional teleport for players
+					player.teleportTo(targetLevel, targetPos.x(), targetPos.y(), targetPos.z(),
+							Set.of(), entity.getYRot(), entity.getXRot(), true);
+				} else {
+					// Same dimension teleport
+					player.hurtMarked = true;
+					player.connection.teleport(targetPos.x(), targetPos.y(), targetPos.z(), entity.getYRot(), entity.getXRot());
+				}
+				player.setDeltaMovement(0, 0, 0);
+				player.hasImpulse = true;
+			} else {
+				if (crossDimensional) {
+					// Cross-dimensional teleport for non-player entities
+					entity.teleportTo(targetLevel, targetPos.x(), targetPos.y(), targetPos.z(),
+							Set.of(), entity.getYRot(), entity.getXRot(), true);
+				} else {
+					// Same dimension teleport
+					entity.teleportTo(targetPos.x(), targetPos.y(), targetPos.z());
+				}
+				entity.setDeltaMovement(0, 0, 0);
+			}
+
+			teleportedAny = true;
+		}
+
+		if (teleportedAny) {
+			level.playSound(null, pos, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+			teleporter.setCooldown(10);
+
+			// Also set cooldown on destination teleporter if present
+			BlockEntity down = targetLevel.getBlockEntity(teleportPos.below());
+			if (down instanceof TeleporterBlockEntity tpDown) {
+				tpDown.setCooldown(10);
+			}
+		}
 	}
 }

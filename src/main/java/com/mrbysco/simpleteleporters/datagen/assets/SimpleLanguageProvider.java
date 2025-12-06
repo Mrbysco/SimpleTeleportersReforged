@@ -17,7 +17,12 @@ public class SimpleLanguageProvider extends LanguageProvider {
 
 	@Override
 	protected void addTranslations() {
+		// Creative tab
+		add("itemGroup.simpleteleporters", "Simple Teleporters");
+
 		addItem(SimpleTeleportersItems.ENDER_SHARD, "Ender Shard");
+		addItem(SimpleTeleportersItems.ENHANCED_ENDER_SHARD, "Enhanced Ender Shard");
+		addItem(SimpleTeleportersItems.HEARTH_CRYSTAL, "Hearth Crystal");
 		addBlock(SimpleTeleportersBlocks.TELEPORTER, "Teleporter");
 
 		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT, "Teleporter teleports");
@@ -26,18 +31,36 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		addSubtitle(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK, "Ender Shard link established");
 
 		add("text.simpleteleporters.unlinked", "Unlinked");
+		add("text.simpleteleporters.how_to_link_hearth", "%1$s + %2$s on a block to link a position");
+		add("text.simpleteleporters.invalid_hearth_target", "Invalid Hearth Crystal target!");
+		add("text.simpleteleporters.linked_hearth", "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.linked", "Linked, %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.how_to_link", "%1$s + %2$s on a block to link a position");
+		add("text.simpleteleporters.hearth_info", "Linked Hearth Crystal to %1$s, %2$s, %3$s in %4$s");
+		add("text.simpleteleporters.hearth_teleporting", "Teleporting in 3 seconds...");
+		add("text.simpleteleporters.hearth_countdown", "Teleporting in %1$s seconds...");
+		add("text.simpleteleporters.hearth_cancelled", "Teleport cancelled!");
+		add("text.simpleteleporters.hearth_already_teleporting", "Already teleporting!");
+		add("text.simpleteleporters.hearth_bind_hint", "%1$s + %2$s on a block to set your hearth location");
+		add("text.simpleteleporters.hearth_use_hint", "%1$s to teleport to your hearth location");
+		add("text.simpleteleporters.hearth_charges", "Charges: %1$s/%2$s");
+		add("text.simpleteleporters.hearth_no_charges", "No charges remaining! Repair with an Ender Pearl.");
+		add("text.simpleteleporters.hearth_repair_hint", "Craft with Ender Pearl to recharge");
 		add("text.simpleteleporters.crystal_info", "Linked Ender Shard to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.error.no_crystal", "This teleporter doesn't have an Ender Shard!");
 		add("text.simpleteleporters.error.unlinked_teleporter", "This teleporter's Ender Shard is unlinked!");
 		add("text.simpleteleporters.error.unlinked_shard", "This Ender Shard is unlinked!");
 		add("text.simpleteleporters.error.invalid_position", "Teleport position is invalid! Perhaps there's a block in the way?");
 		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Shard isn't powerful enough to cross dimensions!");
+		add("text.simpleteleporters.enhanced", "Cross-Dimensional");
 
 		addConfig("client", "Client", "Client Settings");
 		addConfig("disableParticles", "Disable Particles", "Disable the particles shown above an active teleporter");
 		addConfig("disableNameplate", "Disable Nameplate", "Disable the nameplate shown above a teleporter with a named crystal");
+
+		// GuideME guidebook
+		add("item.simpleteleporters.guide_book", "Simple Teleporters Guide");
+		add("item.simpleteleporters.guide_book.tooltip", "Learn about teleportation");
 	}
 
 	public void addSubtitle(DeferredHolder<SoundEvent, SoundEvent> sound, String name) {

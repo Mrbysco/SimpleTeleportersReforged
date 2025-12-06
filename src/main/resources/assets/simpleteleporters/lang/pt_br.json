@@ -1,0 +1,23 @@
+{
+  "block.simpleteleporters.teleporter": "Teletransportador",
+  "item.simpleteleporters.ender_shard": "Fragmento do Ender",
+  "simpleteleporters.configuration.client": "Cliente",
+  "simpleteleporters.configuration.client.tooltip": "Configurações do Cliente",
+  "simpleteleporters.configuration.disableNameplate": "Desativar Placa de Nome",
+  "simpleteleporters.configuration.disableNameplate.tooltip": "Desativa a placa de nome exibida acima de um teletransportador com um cristal nomeado",
+  "simpleteleporters.configuration.disableParticles": "Desativar Partículas",
+  "simpleteleporters.configuration.disableParticles.tooltip": "Desativa as partículas exibidas acima de um teletransportador ativo",
+  "simpleteleportersblock.teleporter.crystal_inserted.subtitle.": "Fragmento do Ender inserido",
+  "simpleteleportersblock.teleporter.crystal_removed.subtitle.": "Fragmento do Ender removido",
+  "simpleteleportersblock.teleporter.teleport.subtitle.": "Teletransportador teletransporta",
+  "simpleteleportersitem.ender_shard.link.subtitle.": "Vínculo do Fragmento do Ender estabelecido",
+  "text.simpleteleporters.crystal_info": "Fragmento do Ender vinculado a %1$s, %2$s, %3$s em %4$s",
+  "text.simpleteleporters.error.invalid_position": "A posição de teletransporte é inválida! Talvez haja um bloco no caminho?",
+  "text.simpleteleporters.error.no_crystal": "Este teletransportador não tem um Fragmento do Ender!",
+  "text.simpleteleporters.error.unlinked_shard": "Este Fragmento do Ender não está vinculado!",
+  "text.simpleteleporters.error.unlinked_teleporter": "O Fragmento do Ender deste teletransportador não está vinculado!",
+  "text.simpleteleporters.error.wrong_dimension": "O Fragmento do Ender deste teletransportador não é poderoso o suficiente para cruzar dimensões!",
+  "text.simpleteleporters.how_to_link": "%1$s + %2$s em um bloco para vincular uma posição",
+  "text.simpleteleporters.linked": "Vinculado, %1$s, %2$s, %3$s em %4$s",
+  "text.simpleteleporters.unlinked": "Não vinculado"
+}

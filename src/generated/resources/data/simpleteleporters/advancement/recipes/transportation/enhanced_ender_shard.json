@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_diamond": {
+    "has_echo_shard": {
       "conditions": {
         "items": [
           {
-            "items": "#c:gems/diamond"
+            "items": "minecraft:echo_shard"
           }
         ]
       },
@@ -21,29 +21,9 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
-    "has_gold_block": {
-      "conditions": {
-        "items": [
-          {
-            "items": "#c:storage_blocks/gold"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
-    "has_quartz_block": {
-      "conditions": {
-        "items": [
-          {
-            "items": "minecraft:quartz_block"
-          }
-        ]
-      },
-      "trigger": "minecraft:inventory_changed"
-    },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "simpleteleporters:teleporter"
+        "recipe": "simpleteleporters:enhanced_ender_shard"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -52,14 +32,12 @@
     [
       "has_the_recipe",
       "has_ender_shard",
-      "has_gold_block",
-      "has_quartz_block",
-      "has_diamond"
+      "has_echo_shard"
     ]
   ],
   "rewards": {
     "recipes": [
-      "simpleteleporters:teleporter"
+      "simpleteleporters:enhanced_ender_shard"
     ]
   }
 }

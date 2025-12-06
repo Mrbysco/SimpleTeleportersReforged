@@ -1,0 +1,18 @@
+{
+  "start_page": "index.md",
+  "default_namespace": "simpleteleporters",
+  "item_settings": {
+    "display_name": {
+      "type": "translatable",
+      "translate": "item.simpleteleporters.guide_book"
+    },
+    "tooltip_lines": [
+      {
+        "type": "translatable",
+        "translate": "item.simpleteleporters.guide_book.tooltip",
+        "color": "#7F7F7F"
+      }
+    ]
+  },
+  "default_language": "en_us"
+}

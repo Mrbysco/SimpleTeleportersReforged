@@ -42,7 +42,6 @@ public class TeleporterBER implements BlockEntityRenderer<TeleporterBlockEntity,
 		} else {
 			renderState.name = null;
 		}
-//		CameraRenderState cameraState = new CameraRenderState();
 	}
 
 	@Override
