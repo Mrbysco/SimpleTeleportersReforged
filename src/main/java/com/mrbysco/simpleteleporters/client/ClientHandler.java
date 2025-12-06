@@ -1,5 +1,7 @@
 package com.mrbysco.simpleteleporters.client;
 
+import com.mrbysco.simpleteleporters.SimpleTeleporters;
+import com.mrbysco.simpleteleporters.block.entity.TeleporterBlockEntity;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
@@ -12,12 +14,14 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 @EventBusSubscriber(Dist.CLIENT)
@@ -64,5 +68,16 @@ public class ClientHandler {
 
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerBlockEntityRenderer(SimpleTeleportersBlockEntities.TELEPORTER.get(), TeleporterBER::new);
+	}
+
+	public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
+		event.register((state, level, pos, tintIndex) -> {
+			if (tintIndex == 0 && level != null && pos != null) {
+				if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
+					return teleporter.getColor().getTextureDiffuseColor();
+				}
+			}
+			return DyeColor.WHITE.getTextureDiffuseColor();
+		}, SimpleTeleportersBlocks.TELEPORTER.get());
 	}
 }

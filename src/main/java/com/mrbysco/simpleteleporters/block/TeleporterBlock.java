@@ -14,6 +14,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
@@ -21,6 +22,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -104,6 +107,23 @@ public class TeleporterBlock extends BaseEntityBlock {
 	@Override
 	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
+			// Handle dyeing with a dye - works with or without sneaking
+			if (stack.getItem() instanceof DyeItem dyeItem) {
+				DyeColor newColor = dyeItem.getDyeColor();
+				if (teleporter.getColor() != newColor) {
+					if (!level.isClientSide()) {
+						teleporter.setColor(newColor);
+						if (!player.getAbilities().instabuild) {
+							stack.shrink(1);
+						}
+					}
+					level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+					level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+					return ItemInteractionResult.sidedSuccess(level.isClientSide());
+				}
+				return ItemInteractionResult.CONSUME;
+			}
+
 			if (teleporter.hasCrystal()) {
 				ItemStack crystal = teleporter.getCrystal();
 
