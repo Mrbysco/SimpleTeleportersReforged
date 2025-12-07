@@ -137,9 +137,7 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.addGameVersion('Server', 'Client')
 
         mainFile.changelog = file("$project.rootDir/changelog.md")
-        mainFile.changelogType = 'markdown'
-
-        mainFile.addOptional("guideme")
+        mainFile.changelogType = 'markdown'mainFile.addOptional("guideme")
     }
 }
 
