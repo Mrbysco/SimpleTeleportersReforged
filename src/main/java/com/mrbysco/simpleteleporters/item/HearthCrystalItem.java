@@ -101,7 +101,7 @@ public class HearthCrystalItem extends Item {
         HearthData currentData = player.getData(SimpleTeleportersAttachments.HEARTH_DATA);
         player.setData(SimpleTeleportersAttachments.HEARTH_DATA, currentData.withBoundLocation(globalPos));
 
-        String dimensionName = level.dimension().location().toString();
+        String dimensionName = level.dimension().identifier().toString();
         player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_info",
                 targetPos.getX(), targetPos.getY(), targetPos.getZ(), dimensionName), true);
         player.playSound(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK.get(), 0.5F,

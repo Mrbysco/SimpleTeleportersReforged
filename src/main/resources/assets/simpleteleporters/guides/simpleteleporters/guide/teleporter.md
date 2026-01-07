@@ -34,7 +34,7 @@ The Teleporter is a block that allows instant teleportation between linked locat
 1. Place a Teleporter block at your destination
 2. Bind an <ItemLink id="simpleteleporters:ender_shard" /> to a location above the destination teleporter by **sneaking** and **right-clicking** on it
 3. Place another Teleporter block at your starting location
-4. **Right-click** on the starting Teleporter with the linked Ender Shard to insert it
+4. **Right-click** on the starting Teleporter with the linked Ender Core to insert it
 
 ### Teleporting
 
@@ -63,13 +63,13 @@ The teleporter only activates on the **rising edge** of a redstone signal (when 
 - **Dyeable**: Right-click with any dye to customize the quartz base color
 - **Redstone Activated**: Send a redstone signal to teleport all entities on the pad
 - **Entity Teleportation**: Teleports players, mobs, animals, and more
-- **Portal Particles**: Active Teleporters display portal particles when they have a linked Ender Shard
+- **Portal Particles**: Active Teleporters display portal particles when they have a linked Ender Core
 - **Cooldown**: A brief cooldown prevents instant re-teleportation
 - **Waterloggable**: Can be placed underwater
-- **Dimension Support**: Same dimension with Ender Shards, cross-dimensional with <ItemLink id="simpleteleporters:enhanced_ender_shard" />
+- **Dimension Support**: Same dimension with Ender Cores, cross-dimensional with <ItemLink id="simpleteleporters:enhanced_ender_shard" />
 
 ## Tips
 
-- For bidirectional travel, set up two Teleporters with Ender Shards pointing at each other
-- The teleporter ejects the Ender Shard when you right-click it, allowing you to reconfigure your network
+- For bidirectional travel, set up two Teleporters with Ender Cores pointing at each other
+- The teleporter ejects the Ender Core when you right-click it, allowing you to reconfigure your network
 - If the destination is blocked, you'll receive an error message

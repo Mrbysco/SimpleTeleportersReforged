@@ -1,5 +1,5 @@
 {
-  "item.simpleteleporters.ender_shard": "末影碎片",
+  "item.simpleteleporters.ender_shard": "末影核心",
   "block.simpleteleporters.teleporter": "传送器",
   "text.simpleteleporters.unlinked": "未链接",
   "text.simpleteleporters.linked": "已链接到: %1$s, %2$s, %3$s",

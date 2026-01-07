@@ -3,7 +3,7 @@ package com.mrbysco.simpleteleporters.integration;
 import com.mrbysco.simpleteleporters.SimpleTeleporters;
 import guideme.Guide;
 import guideme.Guides;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
  * This class is isolated to prevent ClassNotFoundException when GuideME is not installed.
  */
 public class GuideMEIntegration {
-	private static final ResourceLocation GUIDE_ID = SimpleTeleporters.id("guide");
+	private static final Identifier GUIDE_ID = SimpleTeleporters.id("guide");
 	private static Guide guide;
 
 	public static void init() {

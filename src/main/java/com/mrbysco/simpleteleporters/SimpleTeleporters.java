@@ -11,7 +11,7 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersCreativeTabs;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -27,8 +27,8 @@ public class SimpleTeleporters {
 	public static final String MOD_ID = "simpleteleporters";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public static ResourceLocation id(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static boolean isGuideMELoaded() {

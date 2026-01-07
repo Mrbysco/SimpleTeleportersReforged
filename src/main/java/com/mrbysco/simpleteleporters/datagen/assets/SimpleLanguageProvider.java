@@ -20,15 +20,15 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		// Creative tab
 		add("itemGroup.simpleteleporters", "Simple Teleporters");
 
-		addItem(SimpleTeleportersItems.ENDER_SHARD, "Ender Shard");
-		addItem(SimpleTeleportersItems.ENHANCED_ENDER_SHARD, "Enhanced Ender Shard");
+		addItem(SimpleTeleportersItems.ENDER_SHARD, "Ender Core");
+		addItem(SimpleTeleportersItems.ENHANCED_ENDER_SHARD, "Enhanced Ender Core");
 		addItem(SimpleTeleportersItems.HEARTH_CRYSTAL, "Hearth Crystal");
 		addBlock(SimpleTeleportersBlocks.TELEPORTER, "Teleporter");
 
 		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT, "Teleporter teleports");
-		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED, "Ender Shard inserted");
-		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED, "Ender Shard removed");
-		addSubtitle(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK, "Ender Shard link established");
+		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED, "Ender Core inserted");
+		addSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED, "Ender Core removed");
+		addSubtitle(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK, "Ender Core link established");
 
 		add("text.simpleteleporters.unlinked", "Unlinked");
 		add("text.simpleteleporters.how_to_link_hearth", "%1$s + %2$s on a block to link a position");
@@ -46,12 +46,12 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.hearth_charges", "Charges: %1$s/%2$s");
 		add("text.simpleteleporters.hearth_no_charges", "No charges remaining! Repair with an Ender Pearl.");
 		add("text.simpleteleporters.hearth_repair_hint", "Craft with Ender Pearl to recharge");
-		add("text.simpleteleporters.crystal_info", "Linked Ender Shard to %1$s, %2$s, %3$s in %4$s");
-		add("text.simpleteleporters.error.no_crystal", "This teleporter doesn't have an Ender Shard!");
-		add("text.simpleteleporters.error.unlinked_teleporter", "This teleporter's Ender Shard is unlinked!");
-		add("text.simpleteleporters.error.unlinked_shard", "This Ender Shard is unlinked!");
+		add("text.simpleteleporters.crystal_info", "Linked Ender Core to %1$s, %2$s, %3$s in %4$s");
+		add("text.simpleteleporters.error.no_crystal", "This teleporter doesn't have an Ender Core!");
+		add("text.simpleteleporters.error.unlinked_teleporter", "This teleporter's Ender Core is unlinked!");
+		add("text.simpleteleporters.error.unlinked_shard", "This Ender Core is unlinked!");
 		add("text.simpleteleporters.error.invalid_position", "Teleport position is invalid! Perhaps there's a block in the way?");
-		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Shard isn't powerful enough to cross dimensions!");
+		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Core isn't powerful enough to cross dimensions!");
 		add("text.simpleteleporters.enhanced", "Cross-Dimensional");
 
 		addConfig("client", "Client", "Client Settings");

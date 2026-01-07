@@ -3,7 +3,7 @@ package com.mrbysco.simpleteleporters.datagen.assets;
 import com.mrbysco.simpleteleporters.SimpleTeleporters;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 
 public class SimpleSoundProvider extends SoundDefinitionsProvider {
@@ -39,11 +39,11 @@ public class SimpleSoundProvider extends SoundDefinitionsProvider {
 				));
 	}
 
-	private ResourceLocation mcLoc(String path) {
-		return ResourceLocation.withDefaultNamespace(path);
+	private Identifier mcLoc(String path) {
+		return Identifier.withDefaultNamespace(path);
 	}
 
-	private String modSubtitle(ResourceLocation id) {
+	private String modSubtitle(Identifier id) {
 		return SimpleTeleporters.MOD_ID + ".subtitle." + id.getPath();
 	}
 }

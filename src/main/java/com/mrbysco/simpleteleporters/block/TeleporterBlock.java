@@ -116,7 +116,6 @@ public class TeleporterBlock extends BaseEntityBlock {
 							}
 
 							player.setDeltaMovement(0, 0, 0);
-							player.hasImpulse = true;
 
 							level.playSound(null, pos, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
 							teleporter.setCooldown(10);
@@ -319,7 +318,6 @@ public class TeleporterBlock extends BaseEntityBlock {
 					player.connection.teleport(targetPos.x(), targetPos.y(), targetPos.z(), entity.getYRot(), entity.getXRot());
 				}
 				player.setDeltaMovement(0, 0, 0);
-				player.hasImpulse = true;
 			} else {
 				if (crossDimensional) {
 					// Cross-dimensional teleport for non-player entities

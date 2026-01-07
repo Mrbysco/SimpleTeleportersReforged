@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.1.6'
+    id 'net.neoforged.moddev' version '2.0.137'
     id 'net.darkhax.curseforgegradle' version '1.1.28'
     id 'com.modrinth.minotaur' version "2.+"
 }
@@ -17,33 +17,34 @@ base {
 // Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
-//minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
-//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
+neoForge {
+    version = project.neo_version
 
-runs {
-    // applies to all the run configs below
-    configureEach {
-        // Recommended logging data for a userdev environment
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-        // Recommended logging level for the console
-        systemProperty 'forge.logging.console.level', 'debug'
-
-        modSource project.sourceSets.main
+    parchment {
+        minecraftVersion = project.parchment_minecraft_version
+        mappingsVersion = project.parchment_mappings_version
     }
 
-    client {
-        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+        server {
+            server()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            programArgument '--nogui'
+        }
+        data {
+            clientData()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
     }
 
-    server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        argument '--nogui'
-    }
-
-    clientData {
-        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
     }
 }
 
@@ -74,19 +75,13 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neo_version}"
-
     compileOnly "mezz.jei:jei-${jei_minecraft}-common-api:${jei_version}"
     compileOnly "mezz.jei:jei-${jei_minecraft}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
     // GuideME - In-game guidebook (optional)
-    compileOnly "curse.maven:guideme-1173950:7127429"
-    localRuntime "curse.maven:guideme-1173950:7127429"
-
-    // Jade - Tooltip mod (dev environment only)
-    // Commented out until 1.21.10 compatible version is available
-    // localRuntime "curse.maven:jade-324717:6853386"
+    compileOnly "curse.maven:guideme-1173950:7366493"
+    localRuntime "curse.maven:guideme-1173950:7366493"
 }
 
 jar {
@@ -137,7 +132,8 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.addGameVersion('Server', 'Client')
 
         mainFile.changelog = file("$project.rootDir/changelog.md")
-        mainFile.changelogType = 'markdown'mainFile.addOptional("guideme")
+        mainFile.changelogType = 'markdown'
+        mainFile.addOptional("guideme")
     }
 }
 

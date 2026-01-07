@@ -60,7 +60,7 @@ public class TeleportCrystalItem extends Item {
 				offsetPos = pos.relative(ctx.getClickedFace());
 			}
 			stack.set(SimpleTeleportersComponents.GLOBAL_POS, GlobalPos.of(player.level().dimension(), offsetPos));
-			String dimensionName = player.level().dimension().location().toString();
+			String dimensionName = player.level().dimension().identifier().toString();
 
 			if (!player.addItem(stack)) {
 				player.drop(stack, false);
@@ -103,7 +103,7 @@ public class TeleportCrystalItem extends Item {
 			GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
 			BlockPos pos = globalPos.pos();
 			ResourceKey<Level> dimension = globalPos.dimension();
-			Component dimensionName = Component.translatable(dimension.location().toLanguageKey("dimension"));
+			Component dimensionName = Component.translatable(dimension.identifier().toLanguageKey("dimension"));
 			MutableComponent component = Component.translatable("text.simpleteleporters.linked",
 					pos.getX(), pos.getY(), pos.getZ(), dimensionName);
 			component.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
