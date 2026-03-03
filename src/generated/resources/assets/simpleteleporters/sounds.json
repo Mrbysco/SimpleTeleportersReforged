@@ -9,7 +9,7 @@
     "sounds": [
       "random/pop"
     ],
-    "subtitle": "simpleteleporters.subtitle.block.teleporter.crystal_inserted"
+    "subtitle": "simpleteleporters.subtitle.block.teleporter.crystal_removed"
   },
   "block.teleporter.teleport": {
     "sounds": [
