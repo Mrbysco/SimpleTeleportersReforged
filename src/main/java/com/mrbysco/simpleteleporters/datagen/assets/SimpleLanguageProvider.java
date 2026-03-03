@@ -43,6 +43,9 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.hearth_already_teleporting", "Already teleporting!");
 		add("text.simpleteleporters.hearth_bind_hint", "%1$s + %2$s on a block to set your hearth location");
 		add("text.simpleteleporters.hearth_use_hint", "%1$s to teleport to your hearth location");
+		add("text.simpleteleporters.hearth_charges", "Charges: %1$s/%2$s");
+		add("text.simpleteleporters.hearth_no_charges", "No charges remaining! Repair with an Ender Pearl.");
+		add("text.simpleteleporters.hearth_repair_hint", "Craft with Ender Pearl to recharge");
 		add("text.simpleteleporters.crystal_info", "Linked Ender Shard to %1$s, %2$s, %3$s in %4$s");
 		add("text.simpleteleporters.error.no_crystal", "This teleporter doesn't have an Ender Shard!");
 		add("text.simpleteleporters.error.unlinked_teleporter", "This teleporter's Ender Shard is unlinked!");
@@ -61,7 +64,7 @@ public class SimpleLanguageProvider extends LanguageProvider {
 	}
 
 	public void addSubtitle(DeferredHolder<SoundEvent, SoundEvent> sound, String name) {
-		String path = SimpleTeleporters.MOD_ID + sound.getId().getPath() + ".subtitle.";
+		String path = SimpleTeleporters.MOD_ID + ".subtitle." + sound.getId().getPath();
 		this.add(path, name);
 	}
 
