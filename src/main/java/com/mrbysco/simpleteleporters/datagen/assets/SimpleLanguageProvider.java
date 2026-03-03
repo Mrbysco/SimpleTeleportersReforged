@@ -64,7 +64,7 @@ public class SimpleLanguageProvider extends LanguageProvider {
 	}
 
 	public void addSubtitle(DeferredHolder<SoundEvent, SoundEvent> sound, String name) {
-		String path = SimpleTeleporters.MOD_ID + sound.getId().getPath() + ".subtitle.";
+		String path = SimpleTeleporters.MOD_ID + ".subtitle." + sound.getId().getPath();
 		this.add(path, name);
 	}
 

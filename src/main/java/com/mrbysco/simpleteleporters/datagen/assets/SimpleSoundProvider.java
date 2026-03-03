@@ -27,7 +27,7 @@ public class SimpleSoundProvider extends SoundDefinitionsProvider {
 						sound(mcLoc("random/pop"))
 				));
 		this.add(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED, definition()
-				.subtitle(modSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.getId()))
+				.subtitle(modSubtitle(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED.getId()))
 				.with(
 						sound(mcLoc("random/pop"))
 				));
