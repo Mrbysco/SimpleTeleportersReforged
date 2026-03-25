@@ -11,6 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -19,8 +20,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-
-import java.util.Set;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.InsideBlockEffectApplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -50,14 +48,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.List;
+import java.util.Set;
 
 public class TeleporterBlock extends BaseEntityBlock {
 	public static final MapCodec<TeleporterBlock> CODEC = simpleCodec(TeleporterBlock::new);
@@ -82,13 +81,13 @@ public class TeleporterBlock extends BaseEntityBlock {
 			if (entity.isShiftKeyDown()) {
 				if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
 					if (!teleporter.hasCrystal()) {
-						player.displayClientMessage(Component.translatable("text.simpleteleporters.error.no_crystal").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+						player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.no_crystal").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 					} else if (!teleporter.isInDimension(entity)) {
-						player.displayClientMessage(Component.translatable("text.simpleteleporters.error.wrong_dimension").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+						player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.wrong_dimension").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 					} else if (!teleporter.isCoolingDown()) {
 						GlobalPos globalPos = teleporter.getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
 						if (globalPos == null) {
-							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.unlinked_teleporter").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+							player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.unlinked_teleporter").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 							return;
 						}
 
@@ -98,9 +97,9 @@ public class TeleporterBlock extends BaseEntityBlock {
 						ServerLevel targetLevel = server != null ? server.getLevel(targetDimension) : null;
 
 						if (targetLevel == null) {
-							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.invalid_position").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+							player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.invalid_position").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 						} else if (targetLevel.getBlockState(teleportPos).isSuffocating(targetLevel, teleportPos)) {
-							player.displayClientMessage(Component.translatable("text.simpleteleporters.error.invalid_position").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+							player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.invalid_position").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 						} else {
 							Vec3 targetPos = new Vec3(teleportPos.getX() + 0.5, teleportPos.getY(), teleportPos.getZ() + 0.5);
 
@@ -136,8 +135,8 @@ public class TeleporterBlock extends BaseEntityBlock {
 	protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 		if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
 			// Handle dyeing with a dye - works with or without sneaking
-			if (stack.getItem() instanceof DyeItem dyeItem) {
-				DyeColor newColor = dyeItem.getDyeColor();
+			if (stack.has(DataComponents.DYE)) {
+				DyeColor newColor = stack.get(DataComponents.DYE);
 				if (teleporter.getColor() != newColor) {
 					if (!level.isClientSide()) {
 						teleporter.setColor(newColor);
@@ -159,7 +158,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 					player.drop(crystal, true);
 				}
 
-				player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED.get(), 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+				player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED.get(), 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
 				level.setBlockAndUpdate(pos, state.setValue(ON, false));
 				teleporter.setCrystal(ItemStack.EMPTY);
@@ -169,14 +168,14 @@ public class TeleporterBlock extends BaseEntityBlock {
 			} else {
 				if (!stack.isEmpty() && (stack.is(SimpleTeleportersItems.ENDER_SHARD.get()) || stack.is(SimpleTeleportersItems.ENHANCED_ENDER_SHARD.get()))) {
 					if (stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
-						player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.get(), 0.5F, 0.4F / (level.random.nextFloat() * 0.4F + 0.8F));
+						player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_INSERTED.get(), 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 						level.setBlockAndUpdate(pos, state.setValue(ON, true));
 						ItemStack crystal = stack.split(1);
 						teleporter.setCrystal(crystal);
 
 						return InteractionResult.SUCCESS;
 					} else {
-						player.displayClientMessage(Component.translatable("text.simpleteleporters.error.unlinked_shard").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)), true);
+						player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.unlinked_shard").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 					}
 				}
 			}

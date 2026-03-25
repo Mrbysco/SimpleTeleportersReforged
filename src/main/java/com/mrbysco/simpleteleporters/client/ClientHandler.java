@@ -6,7 +6,9 @@ import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,12 +18,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+
+import java.util.List;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientHandler {
@@ -66,14 +71,22 @@ public class ClientHandler {
 		event.registerBlockEntityRenderer(SimpleTeleportersBlockEntities.TELEPORTER.get(), TeleporterBER::new);
 	}
 
-	public static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-		event.register((state, level, pos, tintIndex) -> {
-			if (tintIndex == 0 && level != null && pos != null) {
+	public static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
+		event.register(List.of(teleporter()), SimpleTeleportersBlocks.TELEPORTER.get());
+	}
+
+	public static BlockTintSource teleporter() {
+		return new BlockTintSource() {
+			public int color(BlockState state) {
+				return DyeColor.WHITE.getTextureDiffuseColor();
+			}
+
+			public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
 				if (level.getBlockEntity(pos) instanceof TeleporterBlockEntity teleporter) {
 					return teleporter.getColor().getTextureDiffuseColor();
 				}
+				return DyeColor.WHITE.getTextureDiffuseColor();
 			}
-			return DyeColor.WHITE.getTextureDiffuseColor();
-		}, SimpleTeleportersBlocks.TELEPORTER.get());
+		};
 	}
 }

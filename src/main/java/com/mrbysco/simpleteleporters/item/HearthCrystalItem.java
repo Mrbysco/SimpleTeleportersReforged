@@ -102,8 +102,8 @@ public class HearthCrystalItem extends Item {
         player.setData(SimpleTeleportersAttachments.HEARTH_DATA, currentData.withBoundLocation(globalPos));
 
         String dimensionName = level.dimension().identifier().toString();
-        player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_info",
-                targetPos.getX(), targetPos.getY(), targetPos.getZ(), dimensionName), true);
+        player.sendOverlayMessage(Component.translatable("text.simpleteleporters.hearth_info",
+                targetPos.getX(), targetPos.getY(), targetPos.getZ(), dimensionName));
         player.playSound(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK.get(), 0.5F,
                 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
@@ -123,24 +123,24 @@ public class HearthCrystalItem extends Item {
         HearthData hearthData = player.getData(SimpleTeleportersAttachments.HEARTH_DATA);
 
         if (hearthData.isTeleporting()) {
-            player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_already_teleporting")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("text.simpleteleporters.hearth_already_teleporting")
+                    .withStyle(ChatFormatting.RED));
             return InteractionResult.FAIL;
         }
         if (!hearthData.hasBoundLocation()) {
-            player.displayClientMessage(Component.translatable("text.simpleteleporters.invalid_hearth_target")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("text.simpleteleporters.invalid_hearth_target")
+                    .withStyle(ChatFormatting.RED));
             return InteractionResult.FAIL;
         }
         if (getCharges(stack) <= 0) {
-            player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_no_charges")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("text.simpleteleporters.hearth_no_charges")
+                    .withStyle(ChatFormatting.RED));
             return InteractionResult.FAIL;
         }
 
         player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(TELEPORT_DELAY_TICKS));
-        player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_teleporting")
-                .withStyle(ChatFormatting.GOLD), true);
+        player.sendOverlayMessage(Component.translatable("text.simpleteleporters.hearth_teleporting")
+                .withStyle(ChatFormatting.GOLD));
         return InteractionResult.SUCCESS;
     }
 
@@ -157,8 +157,8 @@ public class HearthCrystalItem extends Item {
         ItemStack mainHandItem = player.getMainHandItem();
         if (!(mainHandItem.getItem() instanceof HearthCrystalItem)) {
             player.setData(SimpleTeleportersAttachments.HEARTH_DATA, hearthData.withTeleportTimer(0));
-            player.displayClientMessage(Component.translatable("text.simpleteleporters.hearth_cancelled")
-                    .withStyle(ChatFormatting.RED), true);
+            player.sendOverlayMessage(Component.translatable("text.simpleteleporters.hearth_cancelled")
+                    .withStyle(ChatFormatting.RED));
             return;
         }
 

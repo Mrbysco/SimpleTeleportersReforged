@@ -10,6 +10,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -45,14 +46,14 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.save(output);
 
 		// Ender shard from ender pearl
-		SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.ENDER_PEARL), RecipeCategory.TRANSPORTATION,
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(Items.ENDER_PEARL), RecipeCategory.TRANSPORTATION, CookingBookCategory.MISC,
 						SimpleTeleportersItems.ENDER_SHARD.get(), 0.7F, 200)
 				.unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
 				.save(output);
 
 		// Hearth crystal from ender shard
 		SimpleCookingRecipeBuilder.smelting(Ingredient.of(SimpleTeleportersItems.ENDER_SHARD.get()), RecipeCategory.TRANSPORTATION,
-						SimpleTeleportersItems.HEARTH_CRYSTAL.get(), 0.7F, 200)
+						CookingBookCategory.MISC, SimpleTeleportersItems.HEARTH_CRYSTAL.get(), 0.7F, 200)
 				.unlockedBy("has_ender_pearl", has(Items.ENDER_PEARL))
 				.save(output);
 

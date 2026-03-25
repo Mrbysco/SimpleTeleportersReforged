@@ -70,7 +70,7 @@ public class TeleportCrystalItem extends Item {
 					offsetPos.getX(), offsetPos.getY(), offsetPos.getZ(), dimensionName);
 			msg.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
 
-			player.displayClientMessage(msg, true);
+			player.sendOverlayMessage(msg);
 
 			player.playSound(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK.get(), 0.5F,
 					0.4F / (ctx.getLevel().getRandom().nextFloat() * 0.4F + 0.8F));

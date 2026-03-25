@@ -5,7 +5,6 @@
   "experience": 0.7,
   "ingredient": "simpleteleporters:ender_shard",
   "result": {
-    "count": 1,
     "id": "simpleteleporters:hearth_crystal"
   }
 }

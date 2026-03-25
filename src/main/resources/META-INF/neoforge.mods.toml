@@ -17,12 +17,12 @@ Simple Teleporters adds a craftable teleporter block to quickly travel your worl
 [[dependencies.simpleteleporters]]
 modId="minecraft"
 type="required"
-versionRange="[1.21.10,1.22)"
+versionRange="[26.1,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.simpleteleporters]]
 modId="neoforge"
 type="required"
-versionRange="[21.10.0-beta,)"
+versionRange="[26.1.0.0-alpha,)"
 ordering="NONE"
 side="BOTH"
