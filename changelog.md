@@ -1,1 +1,1 @@
-* Fix subtitles for the teleporter sounds
+* Initial update to 26.1
