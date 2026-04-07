@@ -44,12 +44,12 @@ public class SimpleTeleporters {
 		SimpleTeleportersAttachments.ATTACHMENT_TYPES.register(eventBus);
 		SimpleTeleportersCreativeTabs.CREATIVE_MODE_TABS.register(eventBus);
 
-		// Register the GuideME guide if GuideME is loaded
-		if (isGuideMELoaded()) {
-			GuideMEIntegration.init();
-		}
-
 		if (dist.isClient()) {
+			// Register the GuideME guide if GuideME is loaded (client-only, GuideMe references client classes)
+			if (isGuideMELoaded()) {
+				GuideMEIntegration.init();
+			}
+
 			container.registerConfig(ModConfig.Type.CLIENT, SimpleTeleportersConfig.clientSpec);
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
