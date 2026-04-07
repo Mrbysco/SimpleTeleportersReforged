@@ -20,11 +20,6 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 neoForge {
     version = project.neo_version
 
-    parchment {
-        minecraftVersion = project.parchment_minecraft_version
-        mappingsVersion = project.parchment_mappings_version
-    }
-
     runs {
         client {
             client()
@@ -75,13 +70,13 @@ repositories {
 }
 
 dependencies {
-//    compileOnly "mezz.jei:jei-${jei_minecraft}-common-api:${jei_version}"
-//    compileOnly "mezz.jei:jei-${jei_minecraft}-neoforge-api:${jei_version}"
-//    localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
+    compileOnly "mezz.jei:jei-${jei_minecraft}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${jei_minecraft}-neoforge-api:${jei_version}"
+    localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
     // GuideME - In-game guidebook (optional)
-    compileOnly "curse.maven:guideme-1173950:7504260"
-//    localRuntime "curse.maven:guideme-1173950:7504260"
+    compileOnly "curse.maven:guideme-1173950:7885779"
+    localRuntime "curse.maven:guideme-1173950:7885779"
 }
 
 jar {
