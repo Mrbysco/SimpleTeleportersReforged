@@ -52,11 +52,15 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.error.unlinked_shard", "This Ender Core is unlinked!");
 		add("text.simpleteleporters.error.invalid_position", "Teleport position is invalid! Perhaps there's a block in the way?");
 		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Core isn't powerful enough to cross dimensions!");
+		add("text.simpleteleporters.error.cooldown", "Teleport Cooldown: %1$s Seconds");
 		add("text.simpleteleporters.enhanced", "Cross-Dimensional");
 
 		addConfig("client", "Client", "Client Settings");
 		addConfig("disableParticles", "Disable Particles", "Disable the particles shown above an active teleporter");
 		addConfig("disableNameplate", "Disable Nameplate", "Disable the nameplate shown above a teleporter with a named crystal");
+		addConfig("server", "Server", "Server Settings");
+		addConfig("teleportCooldown", "Teleport Cooldown", "The cooldown (in seconds) applied to a teleporter after use. Set to 0 to disable.");
+		addConfig("redstonePreventsCooldown", "Redstone Bypasses Cooldown", "If true, a redstone pulse always triggers the teleporter regardless of any pending cooldown.");
 
 		// GuideME guidebook
 		add("item.simpleteleporters.guide_book", "Simple Teleporters Guide");

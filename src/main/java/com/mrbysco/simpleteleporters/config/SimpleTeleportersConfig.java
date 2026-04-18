@@ -24,12 +24,39 @@ public class SimpleTeleportersConfig {
 		}
 	}
 
+	public static class Server {
+		public final ModConfigSpec.IntValue teleportCooldown;
+		public final ModConfigSpec.BooleanValue redstonePreventsCooldown;
+
+		Server(ModConfigSpec.Builder builder) {
+			builder.comment("Server settings")
+					.push("server");
+
+			teleportCooldown = builder
+					.comment("The cooldown (in seconds) applied to a teleporter after use, preventing immediate re-teleport. Set to 0 to disable. [Default: 3, Min: 0, Max: 300]")
+					.defineInRange("teleportCooldown", 3, 0, 300);
+
+			redstonePreventsCooldown = builder
+					.comment("If true, a redstone pulse always triggers the teleporter regardless of any pending cooldown. [Default: true]")
+					.define("redstonePreventsCooldown", true);
+
+			builder.pop();
+		}
+	}
+
 	public static final ModConfigSpec clientSpec;
 	public static final Client CLIENT;
 
+	public static final ModConfigSpec serverSpec;
+	public static final Server SERVER;
+
 	static {
-		final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
-		clientSpec = specPair.getRight();
-		CLIENT = specPair.getLeft();
+		final Pair<Client, ModConfigSpec> clientPair = new ModConfigSpec.Builder().configure(Client::new);
+		clientSpec = clientPair.getRight();
+		CLIENT = clientPair.getLeft();
+
+		final Pair<Server, ModConfigSpec> serverPair = new ModConfigSpec.Builder().configure(Server::new);
+		serverSpec = serverPair.getRight();
+		SERVER = serverPair.getLeft();
 	}
 }

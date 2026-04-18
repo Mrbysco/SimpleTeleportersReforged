@@ -55,6 +55,7 @@ configurations {
 }
 
 repositories {
+    mavenCentral()
     maven {
         // location of the maven that hosts JEI files since January 2023
         name = "Jared's maven"
@@ -75,8 +76,7 @@ dependencies {
     localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
     // GuideME - In-game guidebook (optional)
-    compileOnly "curse.maven:guideme-1173950:7885779"
-    localRuntime "curse.maven:guideme-1173950:7885779"
+    implementation "org.appliedenergistics:guideme:${guideme_version}"
 }
 
 jar {

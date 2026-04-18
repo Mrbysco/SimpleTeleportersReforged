@@ -84,7 +84,10 @@ public class TeleporterBlock extends BaseEntityBlock {
 						player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.no_crystal").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
 					} else if (!teleporter.isInDimension(entity)) {
 						player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.wrong_dimension").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-					} else if (!teleporter.isCoolingDown()) {
+					} else if (teleporter.isCoolingDown()) {
+						int secondsLeft = Math.max(1, (teleporter.getCooldown() + 19) / 20);
+						player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.cooldown", secondsLeft).setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+					} else {
 						GlobalPos globalPos = teleporter.getCrystal().get(SimpleTeleportersComponents.GLOBAL_POS);
 						if (globalPos == null) {
 							player.sendOverlayMessage(Component.translatable("text.simpleteleporters.error.unlinked_teleporter").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
@@ -117,12 +120,13 @@ public class TeleporterBlock extends BaseEntityBlock {
 							player.setDeltaMovement(0, 0, 0);
 
 							level.playSound(null, pos, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-							teleporter.setCooldown(10);
+							int cooldownTicks = SimpleTeleportersConfig.SERVER.teleportCooldown.getAsInt() * 20;
+							teleporter.setCooldown(cooldownTicks);
 
 							// Set cooldown on destination teleporter if present
 							BlockEntity down = targetLevel.getBlockEntity(teleportPos.below());
 							if (down instanceof TeleporterBlockEntity tpDown) {
-								tpDown.setCooldown(10);
+								tpDown.setCooldown(cooldownTicks);
 							}
 						}
 					}
@@ -270,7 +274,10 @@ public class TeleporterBlock extends BaseEntityBlock {
 	 * Teleports all entities standing on the teleporter to the linked destination.
 	 */
 	private void teleportAllEntities(Level level, BlockPos pos, TeleporterBlockEntity teleporter) {
-		if (!teleporter.hasCrystal() || teleporter.isCoolingDown()) {
+		if (!teleporter.hasCrystal()) {
+			return;
+		}
+		if (teleporter.isCoolingDown() && !SimpleTeleportersConfig.SERVER.redstonePreventsCooldown.getAsBoolean()) {
 			return;
 		}
 
@@ -334,12 +341,13 @@ public class TeleporterBlock extends BaseEntityBlock {
 
 		if (teleportedAny) {
 			level.playSound(null, pos, SimpleTeleportersSoundEvents.TELEPORTER_TELEPORT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-			teleporter.setCooldown(10);
+			int cooldownTicks = SimpleTeleportersConfig.SERVER.teleportCooldown.getAsInt() * 20;
+			teleporter.setCooldown(cooldownTicks);
 
 			// Also set cooldown on destination teleporter if present
 			BlockEntity down = targetLevel.getBlockEntity(teleportPos.below());
 			if (down instanceof TeleporterBlockEntity tpDown) {
-				tpDown.setCooldown(10);
+				tpDown.setCooldown(cooldownTicks);
 			}
 		}
 	}
