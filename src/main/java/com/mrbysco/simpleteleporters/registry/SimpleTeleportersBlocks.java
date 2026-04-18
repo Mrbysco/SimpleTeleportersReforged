@@ -7,12 +7,11 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@SuppressWarnings("removal")
 public class SimpleTeleportersBlocks {
 	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(SimpleTeleporters.MOD_ID);
 
 	public static final DeferredBlock<TeleporterBlock> TELEPORTER = BLOCKS.registerBlock("teleporter",
 			TeleporterBlock::new,
-			BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()
+			() -> BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).noOcclusion()
 					.destroyTime(1).explosionResistance(1).lightLevel((state) -> 15));
 }

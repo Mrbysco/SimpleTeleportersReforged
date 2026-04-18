@@ -9,16 +9,14 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@SuppressWarnings("removal")
 public class SimpleTeleportersItems {
 	public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SimpleTeleporters.MOD_ID);
 
-	public static final DeferredItem<Item> ENDER_SHARD = ITEMS.registerItem("ender_shard", TeleportCrystalItem::new, new Item.Properties().stacksTo(16));
-	public static final DeferredItem<Item> ENHANCED_ENDER_SHARD = ITEMS.registerItem("enhanced_ender_shard", EnhancedTeleportCrystalItem::new, new Item.Properties().stacksTo(16));
-	public static final DeferredItem<Item> HEARTH_CRYSTAL = ITEMS.registerItem("hearth_crystal", HearthCrystalItem::new, new Item.Properties().stacksTo(1));
+	public static final DeferredItem<Item> ENDER_SHARD = ITEMS.registerItem("ender_shard", TeleportCrystalItem::new, () -> new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item> ENHANCED_ENDER_SHARD = ITEMS.registerItem("enhanced_ender_shard", EnhancedTeleportCrystalItem::new, () -> new Item.Properties().stacksTo(16));
+	public static final DeferredItem<Item> HEARTH_CRYSTAL = ITEMS.registerItem("hearth_crystal", HearthCrystalItem::new, () -> new Item.Properties().stacksTo(1));
 
 	// Block items
-	public static final DeferredItem<BlockItem> TELEPORTER = ITEMS.registerItem("teleporter",
-			(properties) -> new BlockItem(SimpleTeleportersBlocks.TELEPORTER.get(), properties),
+	public static final DeferredItem<BlockItem> TELEPORTER = ITEMS.registerSimpleBlockItem(SimpleTeleportersBlocks.TELEPORTER, () ->
 			new Item.Properties().useBlockDescriptionPrefix());
 }
