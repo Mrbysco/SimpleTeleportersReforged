@@ -24,12 +24,34 @@ public class SimpleTeleportersConfig {
 		}
 	}
 
+	public static class Server {
+		public final ModConfigSpec.BooleanValue enableSableIntegration;
+
+		Server(ModConfigSpec.Builder builder) {
+			builder.comment("Server settings")
+					.push("server");
+
+			enableSableIntegration = builder
+					.comment("Allow Ender Shards to bind to Sable SubLevels (Create: Aeronautics airships). Has no effect when Sable is not installed. [Default: true]")
+					.define("enableSableIntegration", true);
+
+			builder.pop();
+		}
+	}
+
 	public static final ModConfigSpec clientSpec;
 	public static final Client CLIENT;
 
+	public static final ModConfigSpec serverSpec;
+	public static final Server SERVER;
+
 	static {
-		final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
-		clientSpec = specPair.getRight();
-		CLIENT = specPair.getLeft();
+		final Pair<Client, ModConfigSpec> clientPair = new ModConfigSpec.Builder().configure(Client::new);
+		clientSpec = clientPair.getRight();
+		CLIENT = clientPair.getLeft();
+
+		final Pair<Server, ModConfigSpec> serverPair = new ModConfigSpec.Builder().configure(Server::new);
+		serverSpec = serverPair.getRight();
+		SERVER = serverPair.getLeft();
 	}
 }

@@ -3,6 +3,7 @@ package com.mrbysco.simpleteleporters.block.entity;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
+import com.mrbysco.simpleteleporters.data.SubLevelBinding;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
@@ -47,6 +48,11 @@ public class TeleporterBlockEntity extends BlockEntity {
 
 		// Enhanced shards can cross dimensions
 		if (hasEnhancedCrystal()) {
+			return true;
+		}
+
+		// Ship can move dims; defer to resolver so the user sees the airship-specific error.
+		if (getCrystal().has(SimpleTeleportersComponents.SUB_LEVEL_BINDING.get())) {
 			return true;
 		}
 

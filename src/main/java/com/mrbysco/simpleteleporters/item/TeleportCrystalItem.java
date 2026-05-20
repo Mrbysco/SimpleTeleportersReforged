@@ -2,6 +2,8 @@ package com.mrbysco.simpleteleporters.item;
 
 import com.mojang.serialization.Codec;
 import com.mrbysco.simpleteleporters.SimpleTeleporters;
+import com.mrbysco.simpleteleporters.data.SubLevelBinding;
+import com.mrbysco.simpleteleporters.integration.SableIntegration;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersSoundEvents;
@@ -32,6 +34,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class TeleportCrystalItem extends Item {
 
@@ -50,6 +54,30 @@ public class TeleportCrystalItem extends Item {
 
 			Level level = ctx.getLevel();
 			BlockPos pos = ctx.getClickedPos();
+
+			if (SimpleTeleporters.isSableIntegrationActive()) {
+				Optional<SubLevelBinding> binding = SableIntegration.bindClick(level, pos);
+				if (binding.isPresent()) {
+					SubLevelBinding b = binding.get();
+					stack.set(SimpleTeleportersComponents.SUB_LEVEL_BINDING.get(), b);
+					stack.remove(SimpleTeleportersComponents.GLOBAL_POS.get());
+
+					if (!player.addItem(stack)) {
+						player.drop(stack, false);
+					}
+
+					MutableComponent msg = Component.translatable("text.simpleteleporters.airship_link",
+							shortUuid(b.subUuid()));
+					msg.setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA));
+					player.displayClientMessage(msg, true);
+
+					player.playSound(SimpleTeleportersSoundEvents.ENDER_SHARD_LINK.get(), 0.5F,
+							0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+
+					return InteractionResult.SUCCESS;
+				}
+			}
+
 			BlockPos offsetPos;
 			if (level.getBlockState(pos).getCollisionShape(level, pos).isEmpty()) {
 				offsetPos = pos;
@@ -59,6 +87,7 @@ public class TeleportCrystalItem extends Item {
 				offsetPos = pos.relative(ctx.getClickedFace());
 			}
 			stack.set(SimpleTeleportersComponents.GLOBAL_POS, GlobalPos.of(player.level().dimension(), offsetPos));
+			stack.remove(SimpleTeleportersComponents.SUB_LEVEL_BINDING.get());
 			String dimensionName = player.level().dimension().location().toString();
 
 			if (!player.addItem(stack)) {
@@ -83,6 +112,15 @@ public class TeleportCrystalItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+		SubLevelBinding sub = stack.get(SimpleTeleportersComponents.SUB_LEVEL_BINDING.get());
+		if (sub != null) {
+			MutableComponent component = Component.translatable("text.simpleteleporters.linked_airship",
+					shortUuid(sub.subUuid()));
+			component.setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA));
+			tooltip.add(component);
+			return;
+		}
+
 		if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 			MutableComponent unlinked = Component.translatable("text.simpleteleporters.unlinked");
 			unlinked.setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
@@ -110,5 +148,11 @@ public class TeleportCrystalItem extends Item {
 
 			tooltip.add(component);
 		}
+	}
+
+	public static String shortUuid(UUID uuid) {
+		String s = uuid.toString();
+		int dash = s.indexOf('-');
+		return dash > 0 ? s.substring(0, dash) : s;
 	}
 }

@@ -93,6 +93,13 @@ dependencies {
 
     // Jade - Tooltip mod (dev environment only)
     localRuntime "curse.maven:jade-324717:6853386"
+
+    // Sable (Create: Aeronautics) - optional
+    // sable-companion-common ships via jarJar in the main Sable jar; cursemaven doesn't expose
+    // nested jars on the compile classpath, so it's vendored in libs/.
+    compileOnly "curse.maven:sable-1312371:${sable_file_id}"
+    compileOnly fileTree(dir: 'libs', include: '*.jar')
+    localRuntime "curse.maven:sable-1312371:${sable_file_id}"
 }
 
 jar {

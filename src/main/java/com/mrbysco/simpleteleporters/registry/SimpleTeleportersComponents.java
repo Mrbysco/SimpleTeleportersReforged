@@ -1,6 +1,7 @@
 package com.mrbysco.simpleteleporters.registry;
 
 import com.mrbysco.simpleteleporters.SimpleTeleporters;
+import com.mrbysco.simpleteleporters.data.SubLevelBinding;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
@@ -31,5 +32,11 @@ public class SimpleTeleportersComponents {
 			DataComponentType.<Integer>builder()
 					.persistent(Codec.INT)
 					.networkSynchronized(net.minecraft.network.codec.ByteBufCodecs.VAR_INT)
+					.build());
+
+	public static final Supplier<DataComponentType<SubLevelBinding>> SUB_LEVEL_BINDING = DATA_COMPONENT_TYPES.register("sub_level_binding", () ->
+			DataComponentType.<SubLevelBinding>builder()
+					.persistent(SubLevelBinding.CODEC)
+					.networkSynchronized(SubLevelBinding.STREAM_CODEC)
 					.build());
 }

@@ -35,6 +35,14 @@ public class SimpleTeleporters {
 		return ModList.get().isLoaded("guideme");
 	}
 
+	public static boolean isSableLoaded() {
+		return ModList.get().isLoaded("sable");
+	}
+
+	public static boolean isSableIntegrationActive() {
+		return isSableLoaded() && SimpleTeleportersConfig.SERVER.enableSableIntegration.getAsBoolean();
+	}
+
 	public SimpleTeleporters(IEventBus eventBus, ModContainer container, Dist dist) {
 		SimpleTeleportersBlocks.BLOCKS.register(eventBus);
 		SimpleTeleportersBlockEntities.BLOCK_ENTITY_TYPES.register(eventBus);
@@ -48,6 +56,8 @@ public class SimpleTeleporters {
 		if (isGuideMELoaded()) {
 			GuideMEIntegration.init();
 		}
+
+		container.registerConfig(ModConfig.Type.SERVER, SimpleTeleportersConfig.serverSpec);
 
 		if (dist.isClient()) {
 			container.registerConfig(ModConfig.Type.CLIENT, SimpleTeleportersConfig.clientSpec);

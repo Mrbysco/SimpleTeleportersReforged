@@ -52,6 +52,9 @@ public class SimpleLanguageProvider extends LanguageProvider {
 		add("text.simpleteleporters.error.unlinked_shard", "This Ender Shard is unlinked!");
 		add("text.simpleteleporters.error.invalid_position", "Teleport position is invalid! Perhaps there's a block in the way?");
 		add("text.simpleteleporters.error.wrong_dimension", "This teleporter's Ender Shard isn't powerful enough to cross dimensions!");
+		add("text.simpleteleporters.error.airship_not_found", "The linked airship is no longer loaded!");
+		add("text.simpleteleporters.airship_link", "Linked Ender Shard to airship %1$s");
+		add("text.simpleteleporters.linked_airship", "Linked to airship %1$s");
 		add("text.simpleteleporters.enhanced", "Cross-Dimensional");
 
 		addConfig("client", "Client", "Client Settings");

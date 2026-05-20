@@ -1,5 +1,6 @@
 package com.mrbysco.simpleteleporters.item;
 
+import com.mrbysco.simpleteleporters.data.SubLevelBinding;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -28,6 +29,15 @@ public class EnhancedTeleportCrystalItem extends TeleportCrystalItem {
 		MutableComponent enhanced = Component.translatable("text.simpleteleporters.enhanced");
 		enhanced.setStyle(Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE));
 		tooltip.add(enhanced);
+
+		SubLevelBinding sub = stack.get(SimpleTeleportersComponents.SUB_LEVEL_BINDING.get());
+		if (sub != null) {
+			MutableComponent component = Component.translatable("text.simpleteleporters.linked_airship",
+					TeleportCrystalItem.shortUuid(sub.subUuid()));
+			component.setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA));
+			tooltip.add(component);
+			return;
+		}
 
 		if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 			MutableComponent unlinked = Component.translatable("text.simpleteleporters.unlinked");
