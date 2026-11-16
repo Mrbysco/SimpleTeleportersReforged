@@ -20,19 +20,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class HearthCrystalItem extends Item {
     private static final int TELEPORT_DELAY_TICKS = 60; // 3 seconds
@@ -197,12 +197,13 @@ public class HearthCrystalItem extends Item {
         consumeCharge(mainHandItem);
     }
 
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+	@Override
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
         int charges = getCharges(stack);
         ChatFormatting chargeColor = charges > 5 ? ChatFormatting.GREEN : (charges > 0 ? ChatFormatting.YELLOW : ChatFormatting.RED);
         MutableComponent chargesInfo = Component.translatable("text.simpleteleporters.hearth_charges", charges, MAX_CHARGES);
         chargesInfo.setStyle(Style.EMPTY.withColor(chargeColor));
-        tooltip.add(chargesInfo);
+        builder.accept(chargesInfo);
 
         Component sneakKey = Component.literal("Sneak");
         Component useKey = Component.literal("Right Click");
@@ -214,14 +215,14 @@ public class HearthCrystalItem extends Item {
 
         MutableComponent bindInfo = Component.translatable("text.simpleteleporters.hearth_bind_hint", sneakKey, useKey);
         bindInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
-        tooltip.add(bindInfo);
+		builder.accept(bindInfo);
 
         MutableComponent useInfo = Component.translatable("text.simpleteleporters.hearth_use_hint", useKey);
         useInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
-        tooltip.add(useInfo);
+		builder.accept(useInfo);
 
         MutableComponent repairInfo = Component.translatable("text.simpleteleporters.hearth_repair_hint");
         repairInfo.setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY));
-        tooltip.add(repairInfo);
+		builder.accept(repairInfo);
     }
 }

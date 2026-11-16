@@ -23,7 +23,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "simpleteleporters:enhanced_ender_shard"
+        "recipes": "simpleteleporters:enhanced_ender_shard"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

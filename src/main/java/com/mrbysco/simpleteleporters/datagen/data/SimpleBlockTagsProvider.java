@@ -16,6 +16,6 @@ public class SimpleBlockTagsProvider extends BlockTagsProvider {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(SimpleTeleportersBlocks.TELEPORTER.get());
+		this.tag(BlockTags.MINEABLE_WITH_PICKAXE).add(SimpleTeleportersBlocks.TELEPORTER.key());
 	}
 }

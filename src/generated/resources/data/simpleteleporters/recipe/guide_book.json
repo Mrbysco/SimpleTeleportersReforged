@@ -6,15 +6,14 @@
     }
   ],
   "type": "minecraft:crafting_shapeless",
-  "category": "misc",
   "ingredients": [
     "minecraft:paper",
     "minecraft:amethyst_shard"
   ],
   "result": {
-    "id": "guideme:guide",
     "components": {
       "guideme:guide_id": "simpleteleporters:guide"
-    }
+    },
+    "id": "guideme:guide"
   }
 }

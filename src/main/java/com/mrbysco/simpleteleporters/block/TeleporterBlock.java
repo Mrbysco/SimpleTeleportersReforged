@@ -1,6 +1,5 @@
 package com.mrbysco.simpleteleporters.block;
 
-import com.mojang.serialization.MapCodec;
 import com.mrbysco.simpleteleporters.block.entity.TeleporterBlockEntity;
 import com.mrbysco.simpleteleporters.config.SimpleTeleportersConfig;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlockEntities;
@@ -21,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Prediction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -59,16 +59,10 @@ import java.util.List;
 import java.util.Set;
 
 public class TeleporterBlock extends BaseEntityBlock {
-	public static final MapCodec<TeleporterBlock> CODEC = simpleCodec(TeleporterBlock::new);
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final BooleanProperty ON = BooleanProperty.create("on");
 
 	protected static final VoxelShape SHAPE = Shapes.box(0D, 0.0D, 0D, 1D, 0.38D, 1D);
-
-	@Override
-	public MapCodec<TeleporterBlock> codec() {
-		return CODEC;
-	}
 
 	public TeleporterBlock(Properties properties) {
 		super(properties);
@@ -109,7 +103,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 							// Handle cross-dimensional or same-dimension teleport
 							if (targetDimension.equals(level.dimension())) {
 								// Same dimension - simple teleport
-								player.hurtMarked = true;
+								player.syncVelocity = true;
 								player.connection.teleport(targetPos.x(), targetPos.y(), targetPos.z(), entity.getYRot(), entity.getXRot());
 							} else {
 								// Cross-dimensional teleport
@@ -159,7 +153,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 				ItemStack crystal = teleporter.getCrystal();
 
 				if (!player.addItem(crystal)) {
-					player.drop(crystal, true);
+					player.drop(crystal, true, Prediction.SERVER_ONLY);
 				}
 
 				player.playSound(SimpleTeleportersSoundEvents.TELEPORTER_CRYSTAL_REMOVED.get(), 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
@@ -320,7 +314,7 @@ public class TeleporterBlock extends BaseEntityBlock {
 							Set.of(), entity.getYRot(), entity.getXRot(), true);
 				} else {
 					// Same dimension teleport
-					player.hurtMarked = true;
+					player.syncVelocity = true;
 					player.connection.teleport(targetPos.x(), targetPos.y(), targetPos.z(), entity.getYRot(), entity.getXRot());
 				}
 				player.setDeltaMovement(0, 0, 0);

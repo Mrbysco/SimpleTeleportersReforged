@@ -51,7 +51,7 @@ public class TeleporterBER implements BlockEntityRenderer<TeleporterBlockEntity,
 			Component displayName = renderState.name;
 			poseStack.pushPose();
 			poseStack.translate(0.5F, 2.0F, 0.5F);
-			poseStack.mulPose(this.entityRenderDispatcher.camera.rotation());
+			poseStack.rotate(this.entityRenderDispatcher.camera.rotation());
 			poseStack.scale(0.025F, -0.025F, 0.025F);
 			float f1 = (float) (-font.width(displayName) / 2);
 			float backgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);

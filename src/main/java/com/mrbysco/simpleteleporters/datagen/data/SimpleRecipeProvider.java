@@ -3,23 +3,26 @@ package com.mrbysco.simpleteleporters.datagen.data;
 import com.mrbysco.simpleteleporters.SimpleTeleporters;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersBlocks;
 import com.mrbysco.simpleteleporters.registry.SimpleTeleportersItems;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import guideme.internal.GuideME;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Blocks;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.Tags;
-
-import java.util.concurrent.CompletableFuture;
+import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 
 public class SimpleRecipeProvider extends RecipeProvider {
-	public SimpleRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-		super(provider, recipeOutput);
+	public SimpleRecipeProvider(BootstrapContext<Recipe<?>> recipeOutput, BootstrapContext<Advancement> advancementOutput) {
+		super(recipeOutput, advancementOutput);
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.define('Q', Blocks.QUARTZ_BLOCK)
 				.define('N', Tags.Items.GEMS_DIAMOND)
 				.unlockedBy("has_ender_shard", has(SimpleTeleportersItems.ENDER_SHARD.get()))
-				.unlockedBy("has_gold_block", has(Tags.Items.STORAGE_BLOCKS_GOLD))
+				.unlockedBy("has_gold_block", has(Tags.BlockItems.STORAGE_BLOCKS_GOLD.item()))
 				.unlockedBy("has_quartz_block", has(Blocks.QUARTZ_BLOCK))
 				.unlockedBy("has_diamond", has(Tags.Items.GEMS_DIAMOND))
 				.save(output);
@@ -77,21 +80,16 @@ public class SimpleRecipeProvider extends RecipeProvider {
 				.requires(Items.ENDER_PEARL)
 				.unlockedBy("has_hearth_crystal", has(SimpleTeleportersItems.HEARTH_CRYSTAL.get()))
 				.save(output, SimpleTeleporters.id("recharge_hearth_crystal").toString());
-	}
 
-	public static class Runner extends RecipeProvider.Runner {
-		public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
-			super(output, completableFuture);
-		}
+		if (ModList.get().isLoaded("guideme")) {
+			shapeless(RecipeCategory.MISC, new ItemStackTemplate(GuideME.GUIDE_ITEM.get(), DataComponentPatch.builder()
+					.set(GuideME.GUIDE_ID_COMPONENT, SimpleTeleporters.id("guide")).build()))
+					.requires(Items.PAPER)
+					.requires(Items.AMETHYST_SHARD)
+					.unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+					.save(output.withConditions(new ModLoadedCondition("guideme")),
+							SimpleTeleporters.id("guide_book").toString());
 
-		@Override
-		protected RecipeProvider createRecipeProvider(HolderLookup.Provider provider, RecipeOutput recipeOutput) {
-			return new SimpleRecipeProvider(provider, recipeOutput);
-		}
-
-		@Override
-		public String getName() {
-			return "Simple Teleporters Reforged Recipes";
 		}
 	}
 }

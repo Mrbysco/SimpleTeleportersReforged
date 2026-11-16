@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "simpleteleporters:recharge_hearth_crystal"
+        "recipes": "simpleteleporters:recharge_hearth_crystal"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

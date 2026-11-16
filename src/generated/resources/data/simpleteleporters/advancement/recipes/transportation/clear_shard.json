@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "simpleteleporters:clear_shard"
+        "recipes": "simpleteleporters:clear_shard"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

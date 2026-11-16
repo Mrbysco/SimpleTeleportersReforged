@@ -44,7 +44,7 @@ public class SimpleTeleporters {
 		SimpleTeleportersAttachments.ATTACHMENT_TYPES.register(eventBus);
 		SimpleTeleportersCreativeTabs.CREATIVE_MODE_TABS.register(eventBus);
 
-		container.registerConfig(ModConfig.Type.SERVER, SimpleTeleportersConfig.serverSpec);
+		container.registerConfig(ModConfig.Type.SYNCED, SimpleTeleportersConfig.serverSpec);
 
 		if (dist.isClient()) {
 			// Register the GuideME guide if GuideME is loaded (client-only, GuideMe references client classes)

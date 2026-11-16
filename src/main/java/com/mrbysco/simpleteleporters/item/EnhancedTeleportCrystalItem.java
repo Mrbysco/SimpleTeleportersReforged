@@ -11,11 +11,12 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 public class EnhancedTeleportCrystalItem extends TeleportCrystalItem {
 
@@ -24,16 +25,16 @@ public class EnhancedTeleportCrystalItem extends TeleportCrystalItem {
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag tooltipFlag) {
 		// Add enhanced indicator
 		MutableComponent enhanced = Component.translatable("text.simpleteleporters.enhanced");
 		enhanced.setStyle(Style.EMPTY.withColor(ChatFormatting.LIGHT_PURPLE));
-		tooltip.add(enhanced);
+		builder.accept(enhanced);
 
 		if (!stack.has(SimpleTeleportersComponents.GLOBAL_POS)) {
 			MutableComponent unlinked = Component.translatable("text.simpleteleporters.unlinked");
 			unlinked.setStyle(Style.EMPTY.withColor(ChatFormatting.RED));
-			tooltip.add(unlinked);
+			builder.accept(unlinked);
 
 			Component sneakKey = Component.literal("Sneak");
 			Component useKey = Component.literal("Right Click");
@@ -45,7 +46,7 @@ public class EnhancedTeleportCrystalItem extends TeleportCrystalItem {
 
 			MutableComponent info = Component.translatable("text.simpleteleporters.how_to_link", sneakKey, useKey);
 			info.setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE));
-			tooltip.add(info);
+			builder.accept(info);
 		} else {
 			GlobalPos globalPos = stack.get(SimpleTeleportersComponents.GLOBAL_POS);
 			BlockPos pos = globalPos.pos();
@@ -55,7 +56,7 @@ public class EnhancedTeleportCrystalItem extends TeleportCrystalItem {
 					pos.getX(), pos.getY(), pos.getZ(), dimensionName);
 			component.setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN));
 
-			tooltip.add(component);
+			builder.accept(component);
 		}
 	}
 

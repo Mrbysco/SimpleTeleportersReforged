@@ -9,27 +9,30 @@ import com.mrbysco.simpleteleporters.datagen.data.SimpleRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.event.GatherDataRegistryEntriesEvent;
 
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber
 public class SimpleDataGen {
 	@SubscribeEvent
+	static void onGatherRegistries(GatherDataRegistryEntriesEvent event) {
+		event.recipe(SimpleRecipeProvider::new);
+		event.lootTable(new LootTableProvider.SubProviderEntry(SimpleLootProvider.SimpleBlockLootSubProvider::new, LootContextParamSets.BLOCK));
+	}
+
+	@SubscribeEvent
 	public static void gatherData(GatherDataEvent.Client event) {
-		DataGenerator generator = event.getGenerator();
-		PackOutput packOutput = generator.getPackOutput();
-		CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+		event.createProvider(SimpleBlockTagsProvider::new);
 
-		generator.addProvider(true, new SimpleLootProvider(packOutput, lookupProvider));
-		generator.addProvider(true, new SimpleRecipeProvider.Runner(packOutput, lookupProvider));
-		generator.addProvider(true, new SimpleBlockTagsProvider(packOutput, lookupProvider));
-
-		generator.addProvider(true, new SimpleLanguageProvider(packOutput));
-		generator.addProvider(true, new SimpleSoundProvider(packOutput));
-		generator.addProvider(true, new SimpleModelProvider(packOutput));
+		event.createProvider(SimpleLanguageProvider::new);
+		event.createProvider(SimpleSoundProvider::new);
+		event.createProvider(SimpleModelProvider::new);
 
 	}
 }

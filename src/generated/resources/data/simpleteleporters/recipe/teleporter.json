@@ -1,6 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "key": {
     "C": "simpleteleporters:ender_shard",
     "G": "#c:ingots/gold",
