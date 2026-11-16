@@ -181,7 +181,7 @@ if (System.getenv().MODRINTH_KEY) {
         loaders = ["neoforge"]
 
         dependencies {
-//            optional.project "jei"
+            optional.project "guideme"
         }
     }
 }
